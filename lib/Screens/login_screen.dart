@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:frizalia/Screens/perfil_screen.dart';
+import 'package:frizalia/Screens/registro_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,10 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Inicio de sesión'),
-      ),
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfileScreen()),
     );
   }
 
@@ -235,32 +236,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     TextButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Recuperar contraseña',
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'Recuperar contraseña',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF777177),
-                        ),
-                      ),
-                    ),
-
-
-
-                    TextButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Registro',
-                            ),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RegistroScreen(),
                           ),
                         );
                       },

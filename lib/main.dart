@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frizalia/Screens/splash_screen.dart';
+import 'package:frizalia/Screens/login_screen.dart';
 
 void main() {
   runApp(const FrizaliaApp());
@@ -18,7 +18,7 @@ class FrizaliaApp extends StatelessWidget {
         fontFamily: 'Roboto',
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFB6A4F2)),
       ),
-      home: const SplashScreen(),
+      home: const LoginScreen(),
     );
   }
 }
