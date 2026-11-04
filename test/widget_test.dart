@@ -8,13 +8,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:frizalia/Screens/perfil_screen.dart';
 import 'package:frizalia/main.dart';
 
 void main() {
-  testWidgets('Splash screen shows the app branding', (WidgetTester tester) async {
+  testWidgets('Splash screen navigates to profile after 3 seconds', (WidgetTester tester) async {
     await tester.pumpWidget(const FrizaliaApp());
 
     expect(find.text('Delfines Store'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump();
+
+    expect(find.byType(ProfileScreen), findsOneWidget);
   });
 }
