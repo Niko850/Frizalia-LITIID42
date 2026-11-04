@@ -117,6 +117,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 28),
 
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFF8D9B5), Color(0xFFF5E5B8)],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.stars,
+                        color: Color(0xFF8B4A58),
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'Puntos Acumulados',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2D2522),
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '2,450 pts',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2D2522),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: Color(0xFF2D2522),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
               // Opciones del Menú
               _buildMenuCard(
                 icon: Icons.shopping_bag_outlined,
