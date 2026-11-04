@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'mis_ordenes_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -164,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            '2,450 pts',
+                            '450 pts',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -189,7 +191,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 iconBgColor: const Color(0xFFFCE4EC),
                 iconColor: const Color(0xFFC2185B),
                 title: 'Mis ordenes',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MisOrdenesScreen(),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 12),
               _buildMenuCard(
