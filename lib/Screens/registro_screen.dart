@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frizalia/Screens/perfil_screen.dart';
+import 'package:frizalia/Screens/Pantalla_principal.dart';
 
 class RegistroScreen extends StatefulWidget {
   const RegistroScreen({super.key});
@@ -11,6 +11,65 @@ class RegistroScreen extends StatefulWidget {
 class _RegistroScreenState extends State<RegistroScreen> {
   bool _termsAccepted = false;
 
+  final TextEditingController nombreController =
+      TextEditingController();
+
+  final TextEditingController apellidoController =
+      TextEditingController();
+
+  final TextEditingController correoController =
+      TextEditingController();
+
+  final TextEditingController telefonoController =
+      TextEditingController();
+
+  final TextEditingController passwordController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    nombreController.dispose();
+    apellidoController.dispose();
+    correoController.dispose();
+    telefonoController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void registrarUsuario() {
+    if (nombreController.text.isEmpty ||
+        correoController.text.isEmpty ||
+        telefonoController.text.isEmpty ||
+        passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Completa todos los campos obligatorios'),
+        ),
+      );
+      return;
+    }
+
+    if (!_termsAccepted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Debes aceptar los términos y condiciones',
+          ),
+        ),
+      );
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(
+          correo: correoController.text,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,12 +77,18 @@ class _RegistroScreenState extends State<RegistroScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D2D2D)),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xFF2D2D2D),
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Frizalia App',
-          style: TextStyle(color: Color(0xFF757575), fontSize: 14),
+          style: TextStyle(
+            color: Color(0xFF757575),
+            fontSize: 14,
+          ),
         ),
         actions: const [
           Center(
@@ -31,7 +96,10 @@ class _RegistroScreenState extends State<RegistroScreen> {
               padding: EdgeInsets.only(right: 16.0),
               child: Text(
                 '🟣 02 Sign Up',
-                style: TextStyle(color: Color(0xFF757575), fontSize: 12),
+                style: TextStyle(
+                  color: Color(0xFF757575),
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
@@ -51,11 +119,13 @@ class _RegistroScreenState extends State<RegistroScreen> {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 8.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Título y subtítulo
                 const Text(
                   'Crear una cuenta 🍧',
                   style: TextStyle(
@@ -64,40 +134,73 @@ class _RegistroScreenState extends State<RegistroScreen> {
                     color: Color(0xFF2D2D2D),
                   ),
                 ),
+
                 const SizedBox(height: 6),
+
                 const Text(
                   'Únete para disfrutar de tus momentos más dulces',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF757575)),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF757575),
+                  ),
                 ),
+
                 const SizedBox(height: 24),
-                
-                // Campos del formulario
-                _buildTextField('Nombre'),
+
+                _buildTextField(
+                  'Nombre',
+                  controller: nombreController,
+                ),
+
                 const SizedBox(height: 12),
-                _buildTextField('Apellido (Opcional)'),
+
+                _buildTextField(
+                  'Apellido (Opcional)',
+                  controller: apellidoController,
+                ),
+
                 const SizedBox(height: 12),
-                _buildTextField('Correo electrónico'),
+
+                _buildTextField(
+                  'Correo electrónico',
+                  controller: correoController,
+                ),
+
                 const SizedBox(height: 12),
-                _buildTextField('Numero telefónico', keyboardType: TextInputType.phone),
+
+                _buildTextField(
+                  'Numero telefónico',
+                  controller: telefonoController,
+                  keyboardType: TextInputType.phone,
+                ),
+
                 const SizedBox(height: 12),
-                _buildTextField('Contraseña', obscureText: true),
+
+                _buildTextField(
+                  'Contraseña',
+                  controller: passwordController,
+                  obscureText: true,
+                ),
+
                 const SizedBox(height: 16),
 
-                // Checkbox de términos y condiciones
                 Row(
                   children: [
                     SizedBox(
-                      height: 24,
                       width: 24,
+                      height: 24,
                       child: Checkbox(
                         value: _termsAccepted,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius:
+                              BorderRadius.circular(4),
                         ),
-                        activeColor: const Color(0xFFFF8FAB),
+                        activeColor:
+                            const Color(0xFFFF8FAB),
                         onChanged: (value) {
                           setState(() {
-                            _termsAccepted = value ?? false;
+                            _termsAccepted =
+                                value ?? false;
                           });
                         },
                       ),
@@ -105,53 +208,62 @@ class _RegistroScreenState extends State<RegistroScreen> {
                     const SizedBox(width: 8),
                     const Text(
                       'Acepto los términos y condiciones',
-                      style: TextStyle(color: Color(0xFF555555), fontSize: 13),
+                      style: TextStyle(
+                        color: Color(0xFF555555),
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 24),
 
-                // Botón Sign Up con flecha
                 SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProfileScreen(),
-                        ),
-                      );
-                    },
+                    onPressed: registrarUsuario,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF6E2B3),
-                      foregroundColor: const Color(0xFF2D2D2D),
+                      backgroundColor:
+                          const Color(0xFFF6E2B3),
+                      foregroundColor:
+                          const Color(0xFF2D2D2D),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius:
+                            BorderRadius.circular(16),
                       ),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
                       children: const [
                         Text(
                           'Sign Up',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         SizedBox(width: 8),
-                        Icon(Icons.arrow_forward, size: 18),
+                        Icon(
+                          Icons.arrow_forward,
+                          size: 18,
+                        ),
                       ],
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 30),
-                
-                // Footer
+
                 const Center(
                   child: Text(
                     'Términos y condiciones',
-                    style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 12),
+                    style: TextStyle(
+                      color: Color(0xFF9E9E9E),
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -162,23 +274,44 @@ class _RegistroScreenState extends State<RegistroScreen> {
     );
   }
 
-  Widget _buildTextField(String hint, {bool obscureText = false, TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildTextField(
+    String hint, {
+    required TextEditingController controller,
+    bool obscureText = false,
+    TextInputType keyboardType =
+        TextInputType.text,
+  }) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
+        hintStyle: const TextStyle(
+          color: Color(0xFF9E9E9E),
+        ),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFFCE4EC), width: 1),
+          borderRadius:
+              BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Color(0xFFFCE4EC),
+            width: 1,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFFF8FAB), width: 1),
+          borderRadius:
+              BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Color(0xFFFF8FAB),
+            width: 1,
+          ),
         ),
       ),
     );

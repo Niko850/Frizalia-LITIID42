@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:frizalia/Screens/perfil_screen.dart';
+import 'package:frizalia/Screens/Pantalla_principal.dart';
 import 'package:frizalia/Screens/registro_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -36,7 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const ProfileScreen()),
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(
+          correo: correoController.text,
+        ),
+      ),
     );
   }
 
@@ -76,9 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const SizedBox(height: 50),
 
-
-
-
                     Container(
                       width: 115,
                       height: 115,
@@ -105,9 +105,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 28),
 
-
-
-
                     const Text(
                       'Frizalia',
                       style: TextStyle(
@@ -128,8 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                     const SizedBox(height: 140),
-
-
 
                     TextField(
                       controller: correoController,
@@ -159,8 +154,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 23),
 
-
-
                     TextField(
                       controller: contrasenaController,
                       obscureText: !mostrarContrasena,
@@ -175,7 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           onPressed: () {
                             setState(() {
-                              mostrarContrasena = !mostrarContrasena;
+                              mostrarContrasena =
+                                  !mostrarContrasena;
                             });
                           },
                         ),
@@ -197,9 +191,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                     const SizedBox(height: 35),
-
-
-
 
                     SizedBox(
                       width: double.infinity,
@@ -231,15 +222,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 25),
 
-
-
-
                     TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RegistroScreen(),
+                            builder: (context) =>
+                                const RegistroScreen(),
                           ),
                         );
                       },
@@ -254,9 +243,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                     const SizedBox(height: 80),
-
-
-
 
                     const Text(
                       'Términos y condiciones',
