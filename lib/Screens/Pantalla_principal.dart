@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:frizalia/Screens/login_screen.dart';
+import 'package:frizalia/Screens/lista_screen.dart';
 import 'package:frizalia/Screens/perfil_screen.dart';
 
 import 'package:frizalia/Models/producto.dart';
@@ -15,18 +16,13 @@ import 'package:frizalia/Widgets/search_view.dart';
 class HomeScreen extends StatefulWidget {
   final String correo;
 
-  const HomeScreen({
-    super.key,
-    required this.correo,
-  });
+  const HomeScreen({super.key, required this.correo});
 
   @override
-  State<HomeScreen> createState() =>
-      _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState
-    extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   final List<Producto> productos = [];
 
   final Map<int, int> seleccionados = {};
@@ -49,14 +45,10 @@ class _HomeScreenState
     );
   }
 
-  List<Producto> get disponibles =>
-      productoService.disponibles();
+  List<Producto> get disponibles => productoService.disponibles();
 
   List<Producto> get filtrados =>
-      productoService.filtrados(
-        categoria: categoria,
-        busqueda: busqueda,
-      );
+      productoService.filtrados(categoria: categoria, busqueda: busqueda);
 
   void cambiarPagina(int nuevaPagina) {
     setState(() {
@@ -64,46 +56,28 @@ class _HomeScreenState
     });
   }
 
-  void agregarProducto(
-    Producto producto,
-  ) {
-    final agregado =
-        productoService.agregarProducto(
-      producto,
-    );
+  void agregarProducto(Producto producto) {
+    final agregado = productoService.agregarProducto(producto);
 
     if (!agregado) {
-      mostrarMensaje(
-        'No hay más unidades disponibles',
-      );
+      mostrarMensaje('No hay más unidades disponibles');
       return;
     }
 
     setState(() {});
 
-    mostrarMensaje(
-      '${producto.nombre} agregado al carrito',
-    );
+    mostrarMensaje('${producto.nombre} agregado al carrito');
   }
 
-  void mostrarMensaje(
-    String mensaje,
-  ) {
+  void mostrarMensaje(String mensaje) {
     ScaffoldMessenger.of(context)
-        .showSnackBar(
-      SnackBar(
-        content: Text(mensaje),
-      ),
-    );
+        .showSnackBar(SnackBar(content: Text(mensaje)));
   }
 
   void cerrarSesion() {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(
-        builder: (_) =>
-            const LoginScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
       (route) => false,
     );
   }
@@ -111,8 +85,7 @@ class _HomeScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          AppColors.fondo,
+      backgroundColor: AppColors.fondo,
 
       body: SafeArea(
         child: IndexedStack(
@@ -135,32 +108,26 @@ class _HomeScreenState
                 });
               },
 
-              cambiarCategoria:
-                  (valor) {
+              cambiarCategoria: (valor) {
                 setState(() {
                   categoria = valor;
                 });
               },
 
-              listadoProductos:
-                  ProductosGrid(
+              listadoProductos: ProductosGrid(
                 productos: filtrados,
-                onAgregar:
-                    agregarProducto,
+                onAgregar: agregarProducto,
               ),
             ),
 
             SearchView(
               categoria: categoria,
 
-              resultados:
-                  filtrados.length,
+              resultados: filtrados.length,
 
-              productosGrid:
-                  ProductosGrid(
+              productosGrid: ProductosGrid(
                 productos: filtrados,
-                onAgregar:
-                    agregarProducto,
+                onAgregar: agregarProducto,
               ),
 
               onBuscar: (valor) {
@@ -169,12 +136,31 @@ class _HomeScreenState
                 });
               },
 
-              onCategoriaSeleccionada:
-                  (valor) {
+              onCategoriaSeleccionada: (valor) {
                 setState(() {
                   categoria = valor;
                 });
               },
+            ),
+
+            ListaScreen(
+              productos: productoService.seleccionadosLista(),
+              cantidades: seleccionados,
+              subtotal: productoService.totalCompra(),
+              onDisminuir: (producto) {
+                setState(() {
+                  productoService.cambiarCantidad(producto, -1);
+                });
+              },
+              onAumentar: (producto) {
+                final agregado = productoService.agregarProducto(producto);
+                if (!agregado) {
+                  mostrarMensaje('No hay más unidades disponibles');
+                  return;
+                }
+                setState(() {});
+              },
+              onBuscar: () => cambiarPagina(1),
             ),
 
             const ProfileScreen(),
@@ -182,8 +168,7 @@ class _HomeScreenState
         ),
       ),
 
-      bottomNavigationBar:
-          BottomNavWidget(
+      bottomNavigationBar: BottomNavWidget(
         paginaActual: pagina,
         onTap: cambiarPagina,
       ),

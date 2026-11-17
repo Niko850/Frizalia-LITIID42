@@ -16,56 +16,33 @@ class BottomNavWidget extends StatelessWidget {
     return SafeArea(
       top: false,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 9,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
         decoration: const BoxDecoration(
           color: Colors.white,
-          border: Border(
-            top: BorderSide(
-              color: AppColors.borde,
-            ),
-          ),
+          border: Border(top: BorderSide(color: AppColors.borde)),
         ),
         child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _botonNavegacion(
-              Icons.home,
-              'Home',
-              0,
-            ),
+            _botonNavegacion(Icons.home, 'Home', 0),
 
-            _botonNavegacion(
-              Icons.search,
-              'Search',
-              1,
-            ),
+            _botonNavegacion(Icons.search, 'Search', 1),
 
-            _botonNavegacion(
-              Icons.person_outline,
-              'Profile',
-              2,
-            ),
+            _botonNavegacion(Icons.shopping_basket_outlined, 'Lista', 2),
+
+            _botonNavegacion(Icons.person_outline, 'Profile', 3),
           ],
         ),
       ),
     );
   }
 
-  Widget _botonNavegacion(
-    IconData icono,
-    String nombre,
-    int indice,
-  ) {
+  Widget _botonNavegacion(IconData icono, String nombre, int indice) {
     final activo = paginaActual == indice;
 
-    return InkWell(
-      onTap: () => onTap(indice),
-      child: SizedBox(
-        width: 75,
+    return Expanded(
+      child: InkWell(
+        onTap: () => onTap(indice),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -73,15 +50,11 @@ class BottomNavWidget extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: activo
-                    ? AppColors.fondoActivo
-                    : Colors.transparent,
+                color: activo ? AppColors.fondoActivo : Colors.transparent,
               ),
               child: Icon(
                 icono,
-                color: activo
-                    ? AppColors.rosaFuerte
-                    : AppColors.iconoInactivo,
+                color: activo ? AppColors.rosaFuerte : AppColors.iconoInactivo,
                 size: 25,
               ),
             ),
@@ -91,13 +64,9 @@ class BottomNavWidget extends StatelessWidget {
             Text(
               nombre,
               style: TextStyle(
-                color: activo
-                    ? AppColors.rosaFuerte
-                    : AppColors.textoInactivo,
+                color: activo ? AppColors.rosaFuerte : AppColors.textoInactivo,
                 fontSize: 12,
-                fontWeight: activo
-                    ? FontWeight.bold
-                    : FontWeight.normal,
+                fontWeight: activo ? FontWeight.bold : FontWeight.normal,
               ),
             ),
           ],
