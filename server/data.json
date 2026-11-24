@@ -208,6 +208,39 @@
       "stock": 15,
       "disponible": true,
       "imagen": "☕"
+    },
+    {
+      "id_producto": 17,
+      "nombre": "Paleta de uva",
+      "descripcion": "Dulce y refrescante",
+      "categoria": "Paletas",
+      "categoria_id": 2,
+      "precio": 28,
+      "stock": 20,
+      "disponible": true,
+      "imagen": "🍇"
+    },
+    {
+      "id_producto": 18,
+      "nombre": "Paleta de fresa",
+      "descripcion": "Fresa natural y cremosa",
+      "categoria": "Paletas",
+      "categoria_id": 2,
+      "precio": 28,
+      "stock": 20,
+      "disponible": true,
+      "imagen": "🍓"
+    },
+    {
+      "id_producto": 19,
+      "nombre": "Paleta de piña",
+      "descripcion": "Tropical y refrescante",
+      "categoria": "Paletas",
+      "categoria_id": 2,
+      "precio": 28,
+      "stock": 20,
+      "disponible": true,
+      "imagen": "🍍"
     }
   ],
   "solicitudes": [

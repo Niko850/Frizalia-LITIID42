@@ -3,6 +3,7 @@ import 'package:frizalia/Models/producto.dart';
 class ProductoService {
   final List<Producto> productos;
   final Map<int, int> seleccionados;
+  final Map<int, Producto> variantesSeleccionadas = {};
 
   ProductoService({
     required this.productos,
@@ -39,6 +40,8 @@ class ProductoService {
   List<Producto> seleccionadosLista() {
     return productos.where(
       (p) => (seleccionados[p.id] ?? 0) > 0,
+    ).map(
+      (p) => variantesSeleccionadas[p.id] ?? p,
     ).toList();
   }
 
@@ -70,6 +73,9 @@ class ProductoService {
     }
 
     seleccionados[producto.id] = actual + 1;
+    if (producto.categoria == 'Aguas Naturales' || producto.categoria == 'Helados') {
+      variantesSeleccionadas[producto.id] = producto;
+    }
     return true;
   }
 
@@ -84,6 +90,7 @@ class ProductoService {
 
     if (nuevaCantidad <= 0) {
       seleccionados.remove(producto.id);
+      variantesSeleccionadas.remove(producto.id);
     } else if (nuevaCantidad <= producto.stock) {
       seleccionados[producto.id] =
           nuevaCantidad;
@@ -92,9 +99,11 @@ class ProductoService {
 
   void eliminarProducto(int id) {
     seleccionados.remove(id);
+    variantesSeleccionadas.remove(id);
   }
 
   void vaciarLista() {
     seleccionados.clear();
+    variantesSeleccionadas.clear();
   }
 }

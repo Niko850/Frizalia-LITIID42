@@ -28,7 +28,7 @@ class BottomNavWidget extends StatelessWidget {
 
             _botonNavegacion(Icons.search, 'Search', 1),
 
-            _botonNavegacion(Icons.shopping_basket_outlined, 'Lista', 2),
+            _botonNavegacion(Icons.favorite_outline, 'Favoritos', 2),
 
             _botonNavegacion(Icons.person_outline, 'Profile', 3),
           ],

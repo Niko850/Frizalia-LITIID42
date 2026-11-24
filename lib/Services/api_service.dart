@@ -187,6 +187,8 @@ class ApiService {
             {
               'id_producto': producto.id,
               'cantidad': cantidades[producto.id] ?? 0,
+              'nombre_producto': producto.nombre,
+              'precio_unitario': producto.precio,
             },
         ],
       },

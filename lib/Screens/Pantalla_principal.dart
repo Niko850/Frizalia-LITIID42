@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:frizalia/Screens/login_screen.dart';
-import 'package:frizalia/Screens/lista_screen.dart';
 import 'package:frizalia/Screens/perfil_screen.dart';
 
 import 'package:frizalia/Models/producto.dart';
@@ -10,6 +9,7 @@ import 'package:frizalia/Services/producto_service.dart';
 import 'package:frizalia/Utils/app_colors.dart';
 
 import 'package:frizalia/Widgets/bottom_nav_widget.dart';
+import 'package:frizalia/Widgets/favoritos_view.dart';
 import 'package:frizalia/Widgets/home_view.dart';
 import 'package:frizalia/Widgets/productos_grid.dart';
 import 'package:frizalia/Widgets/search_view.dart';
@@ -38,6 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
   bool cargandoCatalogo = true;
   String? errorCatalogo;
 
+  /// Contador de veces que el usuario ha pedido cada producto (clave: nombre o id)
+  final Map<String, int> frecuenciaPedidos = {};
+  final Set<String> favoritosManuales = {};
+  bool cargandoFavoritos = false;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
       seleccionados: seleccionados,
     );
     cargarCatalogo();
+    cargarMasPedidos();
   }
 
   Future<void> cargarCatalogo() async {
@@ -71,6 +77,47 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> cargarMasPedidos() async {
+    if (mounted) setState(() => cargandoFavoritos = true);
+    try {
+      final solicitudes = await ApiService.instance.obtenerMisSolicitudes();
+      final conteo = <String, int>{};
+
+      for (final solicitud in solicitudes) {
+        final detalles = (solicitud['productos'] as List? ?? [])
+            .whereType<Map<String, dynamic>>();
+        for (final item in detalles) {
+          final nombre = '${item['nombre_producto'] ?? ''}'.trim();
+          if (nombre.isEmpty) continue;
+          final cantidad = int.tryParse('${item['cantidad'] ?? 1}') ?? 1;
+          conteo[nombre] = (conteo[nombre] ?? 0) + (cantidad > 0 ? cantidad : 1);
+        }
+      }
+
+      if (mounted) {
+        setState(() {
+          frecuenciaPedidos
+            ..clear()
+            ..addAll(conteo);
+        });
+      }
+    } catch (_) {
+      // Si falla la carga de historial, se mantiene lo que haya en favoritosManuales
+    } finally {
+      if (mounted) setState(() => cargandoFavoritos = false);
+    }
+  }
+
+  void toggleFavoritoManual(String nombreProducto) {
+    setState(() {
+      if (favoritosManuales.contains(nombreProducto)) {
+        favoritosManuales.remove(nombreProducto);
+      } else {
+        favoritosManuales.add(nombreProducto);
+      }
+    });
+  }
+
   List<Producto> get disponibles => productoService.disponibles();
 
   List<Producto> get filtrados =>
@@ -80,6 +127,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       pagina = nuevaPagina;
     });
+    // Refresca los más pedidos al entrar a la pestaña de Favoritos
+    if (nuevaPagina == 2) {
+      cargarMasPedidos();
+    }
   }
 
   void agregarProducto(Producto producto) {
@@ -178,34 +229,14 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
 
-            ListaScreen(
-              productos: productoService.seleccionadosLista(),
-              cantidades: seleccionados,
-              subtotal: productoService.totalCompra(),
-              onDisminuir: (producto) {
-                setState(() {
-                  productoService.cambiarCantidad(producto, -1);
-                });
-              },
-              onAumentar: (producto) {
-                final agregado = productoService.agregarProducto(producto);
-                if (!agregado) {
-                  mostrarMensaje('No hay más unidades disponibles');
-                  return;
-                }
-                setState(() {});
-              },
-              onBuscar: () => cambiarPagina(1),
-              onSolicitar: (minutosLlegada) async {
-                final respuesta = await ApiService.instance.crearSolicitud(
-                  productos: productoService.seleccionadosLista(),
-                  cantidades: seleccionados,
-                  minutosLlegada: minutosLlegada,
-                );
-                productoService.vaciarLista();
-                if (mounted) setState(() {});
-                return respuesta['folio'] as String? ?? 'registrada';
-              },
+            FavoritosView(
+              catalogo: productos,
+              frecuenciaPedidos: frecuenciaPedidos,
+              favoritosManuales: favoritosManuales,
+              isLoading: cargandoFavoritos,
+              onToggleFavorito: toggleFavoritoManual,
+              onAgregar: agregarProducto,
+              onExplorar: () => cambiarPagina(1),
             ),
 
             ProfileScreen(

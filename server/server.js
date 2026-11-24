@@ -33,6 +33,9 @@ const seedData = {
     { id_producto: 14, nombre: 'Helado de limón', descripcion: 'Cremoso y cítrico', categoria: 'Helados', categoria_id: 1, precio: 42, stock: 15, disponible: true, imagen: '🍋' },
     { id_producto: 15, nombre: 'Helado napolitano', descripcion: 'Chocolate, vainilla y fresa', categoria: 'Helados', categoria_id: 1, precio: 42, stock: 15, disponible: true, imagen: '🍨' },
     { id_producto: 16, nombre: 'Helado de capuchino', descripcion: 'Café cremoso con aroma intenso', categoria: 'Helados', categoria_id: 1, precio: 42, stock: 15, disponible: true, imagen: '☕' },
+    { id_producto: 17, nombre: 'Paleta de uva', descripcion: 'Dulce y refrescante', categoria: 'Paletas', categoria_id: 2, precio: 28, stock: 20, disponible: true, imagen: '🍇' },
+    { id_producto: 18, nombre: 'Paleta de fresa', descripcion: 'Fresa natural y cremosa', categoria: 'Paletas', categoria_id: 2, precio: 28, stock: 20, disponible: true, imagen: '🍓' },
+    { id_producto: 19, nombre: 'Paleta de piña', descripcion: 'Tropical y refrescante', categoria: 'Paletas', categoria_id: 2, precio: 28, stock: 20, disponible: true, imagen: '🍍' },
   ],
   solicitudes: [],
 };
@@ -236,7 +239,34 @@ const server = http.createServer(async (req, res) => {
           send(res, 409, { mensaje: `Solo quedan ${producto.stock} unidades de ${producto.nombre}.` });
           return;
         }
-        detalles.push({ id_producto: id, nombre_producto: producto.nombre, cantidad, precio_unitario: producto.precio, subtotal: producto.precio * cantidad });
+        const esAguaNatural = producto.categoria === 'Aguas Naturales';
+        const esHelado = producto.categoria === 'Helados';
+        const precioSolicitado = Number(item.precio_unitario);
+        let precioUnitario = producto.precio;
+
+        if (esAguaNatural && (precioSolicitado === 43 || precioSolicitado === 60)) {
+          precioUnitario = precioSolicitado;
+        } else if (esHelado) {
+          const tamanoValido = typeof item.nombre_producto === 'string' &&
+            (item.nombre_producto.includes('Pequeño') ||
+              item.nombre_producto.includes('Mediano') ||
+              item.nombre_producto.includes('Grande'));
+          const base = item.nombre_producto.includes('Pequeño')
+            ? 20
+            : item.nombre_producto.includes('Mediano')
+              ? 25
+              : 28;
+          const baseValida = precioSolicitado >= base &&
+            ((precioSolicitado - base) % 5 === 0);
+          if (tamanoValido && baseValida) {
+            precioUnitario = precioSolicitado;
+          }
+        }
+        const nombrePersonalizado = typeof item.nombre_producto === 'string' && item.nombre_producto.trim();
+        const nombreProducto = (esAguaNatural || esHelado) && nombrePersonalizado
+          ? nombrePersonalizado
+          : producto.nombre;
+        detalles.push({ id_producto: id, nombre_producto: nombreProducto, cantidad, precio_unitario: precioUnitario, subtotal: precioUnitario * cantidad });
       }
 
       for (const detalle of detalles) {
