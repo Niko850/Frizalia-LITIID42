@@ -1,17 +1,21 @@
-# frizalia
+# Frizalia móvil
 
-A new Flutter project.
+Aplicación Flutter para clientes. Consume productos, categorías, autenticación, solicitudes e historial del backend Frizalia.
 
-## Getting Started
+## Ejecutar
 
-This project is a starting point for a Flutter application.
+El backend debe estar activo en el puerto 3000, conectado a `frizalia_demo_db`, con `/api/auth` habilitado y `JWT_SECRET` configurado. Registra una cuenta cliente desde la app; la cuenta técnica del SQL no puede iniciar sesión.
 
-A few resources to get you started if this is your first Flutter project:
+- Android Emulator: `http://10.0.2.2:3000/api`.
+- iOS Simulator y escritorio local: `http://localhost:3000/api`.
+- Teléfono físico: usa la IP LAN del equipo que ejecuta el backend.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```sh
+flutter run --dart-define=API_BASE_URL=http://192.168.1.20:3000/api
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Sustituye la IP de ejemplo por la del equipo y conecta ambos dispositivos a la misma red. HTTP y tráfico cleartext están habilitados para desarrollo local; no publiques la app así, usa HTTPS en producción.
+
+## Catálogo
+
+El SQL crea categorías, pero no productos. Registra productos desde el panel web; solo los disponibles con stock mayor que cero se muestran en el móvil.

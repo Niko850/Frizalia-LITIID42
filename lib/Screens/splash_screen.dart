@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:frizalia/Screens/login_screen.dart';
+import 'package:frizalia/Utils/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,9 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     });
   }
@@ -30,49 +29,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(
-        255,
-        236,
-        178,
-        249,
-      ),
+      backgroundColor: AppColors.rosaSuave,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            Icon(
-              Icons.storefront,
-              size: 90,
-              color: Color.fromARGB(
-                255,
-                0,
-                0,
-                0,
-              ),
-            ),
+            Icon(Icons.storefront, size: 90, color: AppColors.rosaFuerte),
             SizedBox(height: 20),
             Text(
               'Paletería',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(
-                  255,
-                  0,
-                  0,
-                  0,
-                ),
+                color: AppColors.texto,
               ),
             ),
             SizedBox(height: 20),
-            CircularProgressIndicator(
-              color: Color.fromARGB(
-                255,
-                0,
-                0,
-                0,
-              ),
-            ),
+            CircularProgressIndicator(color: AppColors.rosaFuerte),
           ],
         ),
       ),

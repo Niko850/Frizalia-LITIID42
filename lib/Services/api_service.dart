@@ -1,0 +1,177 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:frizalia/Models/producto.dart';
+
+class ApiService {
+  ApiService._();
+
+  static final ApiService instance = ApiService._();
+  static const _configuredUrl = String.fromEnvironment('API_BASE_URL');
+
+  String? _token;
+  Map<String, dynamic>? usuario;
+
+  String get _baseUrl {
+    if (_configuredUrl.isNotEmpty) {
+      return _configuredUrl.replaceFirst(RegExp(r'/+$'), '');
+    }
+
+    if (kIsWeb) return 'http://localhost:3000/api';
+
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return 'http://10.0.2.2:3000/api';
+      case TargetPlatform.iOS:
+        return 'http://localhost:3000/api';
+      default:
+        return 'http://127.0.0.1:3000/api';
+    }
+  }
+
+  Map<String, String> get _headers => {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    if (_token != null) 'Authorization': 'Bearer $_token',
+  };
+
+  Future<dynamic> _request(
+    String method,
+    String path, {
+    Map<String, dynamic>? body,
+  }) async {
+    final uri = Uri.parse('$_baseUrl$path');
+    final encodedBody = body == null ? null : jsonEncode(body);
+    late final http.Response response;
+
+    try {
+      switch (method) {
+        case 'POST':
+          response = await http
+              .post(uri, headers: _headers, body: encodedBody)
+              .timeout(const Duration(seconds: 15));
+        default:
+          response = await http
+              .get(uri, headers: _headers)
+              .timeout(const Duration(seconds: 15));
+      }
+    } on Exception {
+      throw Exception(
+        'No se pudo conectar con Frizalia. Revisa la URL de la API y que el servidor esté activo.',
+      );
+    }
+
+    final dynamic data = response.body.isEmpty
+        ? null
+        : jsonDecode(response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      final mensaje = data is Map<String, dynamic>
+          ? data['mensaje'] as String? ?? 'La solicitud no pudo completarse.'
+          : 'La solicitud no pudo completarse.';
+      throw Exception(mensaje);
+    }
+    return data;
+  }
+
+  Future<List<Producto>> obtenerProductos() async {
+    final data = await _request('GET', '/productos');
+    if (data is! List) return [];
+
+    return data
+        .whereType<Map<String, dynamic>>()
+        .where((producto) {
+          final disponible = producto['disponible'];
+          final stock = int.tryParse('${producto['stock'] ?? 0}') ?? 0;
+          return (disponible == 1 || disponible == true) && stock > 0;
+        })
+        .map(Producto.fromJson)
+        .toList();
+  }
+
+  Future<List<String>> obtenerCategorias() async {
+    final data = await _request('GET', '/categorias/activas');
+    if (data is! List) return [];
+
+    return data
+        .whereType<Map<String, dynamic>>()
+        .map((categoria) => categoria['nombre'])
+        .whereType<String>()
+        .toList();
+  }
+
+  Future<void> iniciarSesion({
+    required String correo,
+    required String password,
+  }) async {
+    final data = await _request(
+      'POST',
+      '/auth/login',
+      body: {'correo': correo, 'password': password},
+    );
+    if (data is! Map<String, dynamic> || data['token'] is! String) {
+      throw Exception('La respuesta de autenticación no es válida.');
+    }
+    _token = data['token'] as String;
+    usuario = data['usuario'] as Map<String, dynamic>?;
+  }
+
+  Future<void> registrarCliente({
+    required String nombre,
+    required String correo,
+    required String password,
+    String? telefono,
+  }) async {
+    await _request(
+      'POST',
+      '/auth/registro',
+      body: {
+        'nombre': nombre,
+        'correo': correo,
+        'password': password,
+        if (telefono != null && telefono.isNotEmpty) 'telefono': telefono,
+      },
+    );
+    await iniciarSesion(correo: correo, password: password);
+  }
+
+  Future<Map<String, dynamic>> crearSolicitud({
+    required List<Producto> productos,
+    required Map<int, int> cantidades,
+    required int minutosLlegada,
+  }) async {
+    final data = await _request(
+      'POST',
+      '/solicitudes',
+      body: {
+        'minutos_llegada': minutosLlegada,
+        'productos': [
+          for (final producto in productos)
+            {
+              'id_producto': producto.id,
+              'cantidad': cantidades[producto.id] ?? 0,
+            },
+        ],
+      },
+    );
+    if (data is! Map<String, dynamic>) {
+      throw Exception('La respuesta de solicitud no es válida.');
+    }
+    return data;
+  }
+
+  Future<List<Map<String, dynamic>>> obtenerMisSolicitudes() async {
+    final data = await _request('GET', '/solicitudes/mis-pedidos');
+    if (data is! Map<String, dynamic> || data['solicitudes'] is! List) {
+      return [];
+    }
+    return (data['solicitudes'] as List)
+        .whereType<Map<String, dynamic>>()
+        .toList();
+  }
+
+  void cerrarSesion() {
+    _token = null;
+    usuario = null;
+  }
+}

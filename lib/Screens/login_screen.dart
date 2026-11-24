@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frizalia/Screens/Pantalla_principal.dart';
 import 'package:frizalia/Screens/registro_screen.dart';
+import 'package:frizalia/Services/api_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final contrasenaController = TextEditingController();
 
   bool mostrarContrasena = false;
+  bool cargando = false;
 
   @override
   void dispose() {
@@ -22,25 +24,39 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void iniciarSesion() {
-    if (correoController.text.isEmpty ||
-        contrasenaController.text.isEmpty) {
+  Future<void> iniciarSesion() async {
+    if (cargando) return;
+    if (correoController.text.isEmpty || contrasenaController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Completa todos los campos'),
-        ),
+        const SnackBar(content: Text('Completa todos los campos')),
       );
       return;
     }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(
-          correo: correoController.text,
+    setState(() => cargando = true);
+    try {
+      await ApiService.instance.iniciarSesion(
+        correo: correoController.text.trim(),
+        password: contrasenaController.text,
+      );
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              HomeScreen(correo: correoController.text.trim()),
         ),
-      ),
-    );
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString().replaceFirst('Exception: ', '')),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => cargando = false);
+    }
   }
 
   @override
@@ -53,20 +69,13 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFFFF4F7),
-              Color(0xFFFFFFFF),
-              Color(0xFFFFF8DC),
-            ],
+            colors: [Color(0xFFFFF4F7), Color(0xFFFFFFFF), Color(0xFFFFF8DC)],
           ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 25,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight:
@@ -91,16 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 3,
                         ),
                         boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x20E6A9B9),
-                            blurRadius: 15,
-                          ),
+                          BoxShadow(color: Color(0x20E6A9B9), blurRadius: 15),
                         ],
                       ),
-                      child: const Text(
-                        '🍦',
-                        style: TextStyle(fontSize: 52),
-                      ),
+                      child: const Text('🍦', style: TextStyle(fontSize: 52)),
                     ),
 
                     const SizedBox(height: 28),
@@ -118,16 +121,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const Text(
                       'Paletería, Nieves y más...',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF777177),
-                      ),
+                      style: TextStyle(fontSize: 16, color: Color(0xFF777177)),
                     ),
 
                     const SizedBox(height: 140),
 
                     TextField(
                       controller: correoController,
+                      enabled: !cargando,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'Correo electrónico',
@@ -156,6 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     TextField(
                       controller: contrasenaController,
+                      enabled: !cargando,
                       obscureText: !mostrarContrasena,
                       decoration: InputDecoration(
                         hintText: 'Contraseña',
@@ -168,8 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           onPressed: () {
                             setState(() {
-                              mostrarContrasena =
-                                  !mostrarContrasena;
+                              mostrarContrasena = !mostrarContrasena;
                             });
                           },
                         ),
@@ -196,27 +197,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       height: 66,
                       child: ElevatedButton(
-                        onPressed: iniciarSesion,
+                        onPressed: cargando ? null : iniciarSesion,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color(0xFFF8E9AF),
-                          foregroundColor:
-                              const Color(0xFF282326),
+                          backgroundColor: const Color(0xFFF8E9AF),
+                          foregroundColor: const Color(0xFF282326),
                           elevation: 2,
-                          shadowColor:
-                              const Color(0x55F5D877),
+                          shadowColor: const Color(0x55F5D877),
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(18),
+                            borderRadius: BorderRadius.circular(18),
                           ),
                         ),
-                        child: const Text(
-                          'Iniciar sesión',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: cargando
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text(
+                                'Iniciar sesión',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
 
@@ -224,11 +229,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     TextButton(
                       onPressed: () {
+                        if (cargando) return;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                const RegistroScreen(),
+                            builder: (context) => const RegistroScreen(),
                           ),
                         );
                       },
@@ -246,10 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const Text(
                       'Términos y condiciones',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF918B90),
-                      ),
+                      style: TextStyle(fontSize: 14, color: Color(0xFF918B90)),
                     ),
                   ],
                 ),

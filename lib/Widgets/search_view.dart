@@ -4,6 +4,7 @@ import 'package:frizalia/Widgets/categorias_widget.dart';
 
 class SearchView extends StatelessWidget {
   final String categoria;
+  final List<String> categorias;
   final int resultados;
   final Widget productosGrid;
 
@@ -13,6 +14,7 @@ class SearchView extends StatelessWidget {
   const SearchView({
     super.key,
     required this.categoria,
+    required this.categorias,
     required this.resultados,
     required this.productosGrid,
     required this.onBuscar,
@@ -37,9 +39,7 @@ class SearchView extends StatelessWidget {
 
         const Text(
           'Encuentra tus paletas, helados y aguas naturales favoritas.',
-          style: TextStyle(
-            color: AppColors.gris,
-          ),
+          style: TextStyle(color: AppColors.gris),
         ),
 
         const SizedBox(height: 25),
@@ -53,22 +53,13 @@ class SearchView extends StatelessWidget {
             fillColor: Colors.white,
 
             border: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(17),
-              borderSide:
-                  const BorderSide(
-                color: Color(0xFFF1DFE8),
-              ),
+              borderRadius: BorderRadius.circular(17),
+              borderSide: const BorderSide(color: Color(0xFFF1DFE8)),
             ),
 
-            enabledBorder:
-                OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(17),
-              borderSide:
-                  const BorderSide(
-                color: Color(0xFFF1DFE8),
-              ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(17),
+              borderSide: const BorderSide(color: Color(0xFFF1DFE8)),
             ),
           ),
         ),
@@ -77,8 +68,8 @@ class SearchView extends StatelessWidget {
 
         CategoriasWidget(
           categoriaSeleccionada: categoria,
-          onCategoriaSeleccionada:
-              onCategoriaSeleccionada,
+          categorias: categorias,
+          onCategoriaSeleccionada: onCategoriaSeleccionada,
         ),
 
         const SizedBox(height: 25),

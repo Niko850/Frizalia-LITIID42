@@ -6,6 +6,7 @@ class Producto {
   final double precio;
   final int stock;
   final String imagen;
+  final String? imagenUrl;
 
   const Producto({
     required this.id,
@@ -15,17 +16,22 @@ class Producto {
     required this.precio,
     required this.stock,
     this.imagen = '🍦',
+    this.imagenUrl,
   });
 
   factory Producto.fromJson(Map<String, dynamic> json) {
+    final imagenUrl = json['imagen_url'] ?? json['imagenUrl'];
+    final imagen = json['imagen'];
+
     return Producto(
-      id: json['id'] ?? 0,
-      nombre: json['nombre'] ?? '',
-      descripcion: json['descripcion'] ?? '',
-      categoria: json['categoria'] ?? '',
-      precio: (json['precio'] ?? 0).toDouble(),
-      stock: json['stock'] ?? 0,
-      imagen: json['imagen'] ?? '🍦',
+      id: (json['id_producto'] ?? json['id'] ?? 0) as int,
+      nombre: (json['nombre'] ?? '') as String,
+      descripcion: (json['descripcion'] ?? json['presentacion'] ?? '') as String,
+      categoria: (json['categoria'] ?? '') as String,
+      precio: double.tryParse('${json['precio'] ?? 0}') ?? 0,
+      stock: int.tryParse('${json['stock'] ?? 0}') ?? 0,
+      imagen: imagen is String && imagen.isNotEmpty ? imagen : '🍦',
+      imagenUrl: imagenUrl is String && imagenUrl.isNotEmpty ? imagenUrl : null,
     );
   }
 
@@ -38,6 +44,7 @@ class Producto {
       'precio': precio,
       'stock': stock,
       'imagen': imagen,
+      'imagen_url': imagenUrl,
     };
   }
 
@@ -49,6 +56,7 @@ class Producto {
     double? precio,
     int? stock,
     String? imagen,
+    String? imagenUrl,
   }) {
     return Producto(
       id: id ?? this.id,
@@ -58,6 +66,7 @@ class Producto {
       precio: precio ?? this.precio,
       stock: stock ?? this.stock,
       imagen: imagen ?? this.imagen,
+      imagenUrl: imagenUrl ?? this.imagenUrl,
     );
   }
 

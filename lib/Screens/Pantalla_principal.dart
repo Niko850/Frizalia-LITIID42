@@ -5,6 +5,7 @@ import 'package:frizalia/Screens/lista_screen.dart';
 import 'package:frizalia/Screens/perfil_screen.dart';
 
 import 'package:frizalia/Models/producto.dart';
+import 'package:frizalia/Services/api_service.dart';
 import 'package:frizalia/Services/producto_service.dart';
 import 'package:frizalia/Utils/app_colors.dart';
 
@@ -33,7 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String categoria = 'Todos';
   String busqueda = '';
-  String nombreUsuario = 'Cliente';
+  List<String> categorias = [];
+  bool cargandoCatalogo = true;
+  String? errorCatalogo;
 
   @override
   void initState() {
@@ -43,6 +46,29 @@ class _HomeScreenState extends State<HomeScreen> {
       productos: productos,
       seleccionados: seleccionados,
     );
+    cargarCatalogo();
+  }
+
+  Future<void> cargarCatalogo() async {
+    setState(() {
+      cargandoCatalogo = true;
+      errorCatalogo = null;
+    });
+    try {
+      final productosNuevos = await ApiService.instance.obtenerProductos();
+      final categoriasNuevas = await ApiService.instance.obtenerCategorias();
+      productos
+        ..clear()
+        ..addAll(productosNuevos);
+      categorias = categoriasNuevas;
+      if (!categorias.contains(categoria) && categoria != 'Todos') {
+        categoria = 'Todos';
+      }
+    } catch (error) {
+      errorCatalogo = error.toString().replaceFirst('Exception: ', '');
+    } finally {
+      if (mounted) setState(() => cargandoCatalogo = false);
+    }
   }
 
   List<Producto> get disponibles => productoService.disponibles();
@@ -75,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void cerrarSesion() {
+    ApiService.instance.cerrarSesion();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -95,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
               productos: disponibles,
               filtrados: filtrados,
               categoria: categoria,
+              categorias: categorias,
 
               abrirBusqueda: () {
                 cambiarPagina(1);
@@ -117,17 +145,24 @@ class _HomeScreenState extends State<HomeScreen> {
               listadoProductos: ProductosGrid(
                 productos: filtrados,
                 onAgregar: agregarProducto,
+                isLoading: cargandoCatalogo,
+                error: errorCatalogo,
+                onRetry: cargarCatalogo,
               ),
             ),
 
             SearchView(
               categoria: categoria,
+              categorias: categorias,
 
               resultados: filtrados.length,
 
               productosGrid: ProductosGrid(
                 productos: filtrados,
                 onAgregar: agregarProducto,
+                isLoading: cargandoCatalogo,
+                error: errorCatalogo,
+                onRetry: cargarCatalogo,
               ),
 
               onBuscar: (valor) {
@@ -161,9 +196,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 setState(() {});
               },
               onBuscar: () => cambiarPagina(1),
+              onSolicitar: (minutosLlegada) async {
+                final respuesta = await ApiService.instance.crearSolicitud(
+                  productos: productoService.seleccionadosLista(),
+                  cantidades: seleccionados,
+                  minutosLlegada: minutosLlegada,
+                );
+                productoService.vaciarLista();
+                if (mounted) setState(() {});
+                return respuesta['folio'] as String? ?? 'registrada';
+              },
             ),
 
-            const ProfileScreen(),
+            ProfileScreen(
+              nombre:
+                  ApiService.instance.usuario?['nombre'] as String? ??
+                  'Cliente',
+              correo: widget.correo,
+              onCerrarSesion: cerrarSesion,
+            ),
           ],
         ),
       ),

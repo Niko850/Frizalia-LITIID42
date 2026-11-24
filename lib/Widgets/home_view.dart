@@ -7,6 +7,7 @@ class HomeView extends StatelessWidget {
   final List<Producto> productos;
   final List<Producto> filtrados;
   final String categoria;
+  final List<String> categorias;
   final VoidCallback abrirBusqueda;
   final VoidCallback verTodos;
   final Function(String) cambiarCategoria;
@@ -17,6 +18,7 @@ class HomeView extends StatelessWidget {
     required this.productos,
     required this.filtrados,
     required this.categoria,
+    required this.categorias,
     required this.abrirBusqueda,
     required this.verTodos,
     required this.cambiarCategoria,
@@ -26,26 +28,20 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 22,
-        vertical: 20,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
       children: [
         Row(
           children: [
             const Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'FRIZALIA GELATERÍA',
                     style: TextStyle(
-                      color:
-                          AppColors.rosaFuerte,
+                      color: AppColors.rosaFuerte,
                       fontSize: 14,
-                      fontWeight:
-                          FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
 
@@ -55,10 +51,8 @@ class HomeView extends StatelessWidget {
                     'Pantalla principal',
                     style: TextStyle(
                       fontSize: 29,
-                      fontWeight:
-                          FontWeight.bold,
-                      color:
-                          AppColors.texto,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.texto,
                     ),
                   ),
                 ],
@@ -66,14 +60,8 @@ class HomeView extends StatelessWidget {
             ),
             const CircleAvatar(
               radius: 27,
-              backgroundColor:
-                  AppColors.avatar,
-              child: Text(
-                '🍦',
-                style: TextStyle(
-                  fontSize: 27,
-                ),
-              ),
+              backgroundColor: AppColors.avatar,
+              child: Text('🍦', style: TextStyle(fontSize: 27)),
             ),
           ],
         ),
@@ -83,33 +71,19 @@ class HomeView extends StatelessWidget {
         InkWell(
           onTap: abrirBusqueda,
           child: Container(
-            padding:
-                const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius:
-                  BorderRadius.circular(20),
-              border: Border.all(
-                color:
-                    AppColors.borde,
-              ),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppColors.borde),
             ),
             child: const Row(
               children: [
-                Icon(
-                  Icons.search,
-                  size: 28,
-                  color:
-                      AppColors.gris,
-                ),
+                Icon(Icons.search, size: 28, color: AppColors.gris),
                 SizedBox(width: 13),
                 Text(
                   'Buscar productos...',
-                  style: TextStyle(
-                    color:
-                        AppColors.hint,
-                    fontSize: 17,
-                  ),
+                  style: TextStyle(color: AppColors.hint, fontSize: 17),
                 ),
               ],
             ),
@@ -119,86 +93,56 @@ class HomeView extends StatelessWidget {
         const SizedBox(height: 25),
 
         CategoriasWidget(
-          categoriaSeleccionada:
-              categoria,
-          onCategoriaSeleccionada:
-              cambiarCategoria,
+          categoriaSeleccionada: categoria,
+          categorias: categorias,
+          onCategoriaSeleccionada: cambiarCategoria,
         ),
 
         const SizedBox(height: 27),
 
         Container(
-          padding:
-              const EdgeInsets.all(23),
+          padding: const EdgeInsets.all(23),
           decoration: BoxDecoration(
-            borderRadius:
-                BorderRadius.circular(23),
-            gradient:
-                const LinearGradient(
-              colors: [
-                Color(0xFFF9BBD7),
-                Color(0xFFFFDDD0),
-                Color(0xFFFFF0BC),
-              ],
+            borderRadius: BorderRadius.circular(23),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFF9BBD7), Color(0xFFFFDDD0), Color(0xFFFFF0BC)],
             ),
           ),
           child: Row(
             children: [
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
                       'FRIZALIA',
                       style: TextStyle(
-                        color:
-                            AppColors
-                                .rosaFuerte,
-                        fontWeight:
-                            FontWeight
-                                .bold,
+                        color: AppColors.rosaFuerte,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(
-                        height: 18),
+                    const SizedBox(height: 18),
 
                     Text(
                       '${productos.length} productos disponibles',
-                      style:
-                          const TextStyle(
+                      style: const TextStyle(
                         fontSize: 22,
-                        fontWeight:
-                            FontWeight
-                                .bold,
-                        color:
-                            AppColors
-                                .texto,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.texto,
                       ),
                     ),
 
-                    const SizedBox(
-                        height: 8),
+                    const SizedBox(height: 8),
 
                     const Text(
                       'Descubre nuestros sabores',
-                      style: TextStyle(
-                        color:
-                            AppColors
-                                .gris,
-                      ),
+                      style: TextStyle(color: AppColors.gris),
                     ),
                   ],
                 ),
               ),
-              const Text(
-                '🍦',
-                style: TextStyle(
-                  fontSize: 60,
-                ),
-              ),
+              const Text('🍦', style: TextStyle(fontSize: 60)),
             ],
           ),
         ),
@@ -206,28 +150,21 @@ class HomeView extends StatelessWidget {
         const SizedBox(height: 30),
 
         Row(
-          mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
               'Populares',
               style: TextStyle(
                 fontSize: 23,
-                fontWeight:
-                    FontWeight.bold,
-                color:
-                    AppColors.texto,
+                fontWeight: FontWeight.bold,
+                color: AppColors.texto,
               ),
             ),
             TextButton(
               onPressed: verTodos,
               child: const Text(
                 'Ver todos',
-                style: TextStyle(
-                  color: AppColors
-                      .rosaFuerte,
-                ),
+                style: TextStyle(color: AppColors.rosaFuerte),
               ),
             ),
           ],

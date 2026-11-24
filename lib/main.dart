@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frizalia/Screens/splash_screen.dart';
+import 'package:frizalia/Utils/app_colors.dart';
 
 void main() {
   runApp(const FrizaliaApp());
@@ -16,9 +17,7 @@ class FrizaliaApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFFDFBF7),
         fontFamily: 'Roboto',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFB6A4F2),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.rosaFuerte),
       ),
       home: const SplashScreen(),
     );

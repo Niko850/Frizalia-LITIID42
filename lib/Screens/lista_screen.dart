@@ -9,6 +9,7 @@ class ListaScreen extends StatelessWidget {
   final ValueChanged<Producto> onDisminuir;
   final ValueChanged<Producto> onAumentar;
   final VoidCallback onBuscar;
+  final Future<String> Function(int minutosLlegada) onSolicitar;
 
   const ListaScreen({
     super.key,
@@ -18,13 +19,11 @@ class ListaScreen extends StatelessWidget {
     required this.onDisminuir,
     required this.onAumentar,
     required this.onBuscar,
+    required this.onSolicitar,
   });
 
   @override
   Widget build(BuildContext context) {
-    final iva = subtotal * 0.16;
-    final total = subtotal + iva;
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
@@ -85,10 +84,26 @@ class ListaScreen extends StatelessWidget {
                                   color: fondo,
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                child: Text(
-                                  producto.imagen,
-                                  style: const TextStyle(fontSize: 32),
-                                ),
+                                child: producto.imagenUrl == null
+                                    ? Text(
+                                        producto.imagen,
+                                        style: const TextStyle(fontSize: 32),
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: Image.network(
+                                          producto.imagenUrl!,
+                                          width: 62,
+                                          height: 62,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, _, _) => Text(
+                                            producto.imagen,
+                                            style: const TextStyle(
+                                              fontSize: 32,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -147,25 +162,11 @@ class ListaScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     _filaTotal('Subtotal', subtotal),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'IVA',
-                          style: TextStyle(color: AppColors.gris),
-                        ),
-                        Text(
-                          '+16%  \$${iva.toStringAsFixed(2)}',
-                          style: const TextStyle(color: AppColors.gris),
-                        ),
-                      ],
-                    ),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       child: Divider(height: 1, color: AppColors.borde),
                     ),
-                    _filaTotal('Total', total, destacado: true),
+                    _filaTotal('Total del pedido', subtotal, destacado: true),
                   ],
                 ),
               ),
@@ -174,9 +175,9 @@ class ListaScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 54,
                 child: FilledButton.icon(
-                  onPressed: () => _mostrarPago(context, total),
-                  icon: const Icon(Icons.point_of_sale_outlined),
-                  label: const Text('Proceder al pago en caja'),
+                  onPressed: () => _solicitarRecogida(context),
+                  icon: const Icon(Icons.shopping_bag_outlined),
+                  label: const Text('Solicitar recogida'),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.rosaFuerte,
                     foregroundColor: Colors.white,
@@ -308,25 +309,78 @@ class ListaScreen extends StatelessWidget {
     );
   }
 
-  void _mostrarPago(BuildContext context, double total) {
-    showDialog<void>(
+  Future<void> _solicitarRecogida(BuildContext context) async {
+    final minutosController = TextEditingController(text: '20');
+    await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        icon: const Icon(
-          Icons.point_of_sale_outlined,
-          color: AppColors.rosaFuerte,
-        ),
-        title: const Text('Pago en caja'),
-        content: Text(
-          'Presenta esta lista en caja. El total a pagar es \$${total.toStringAsFixed(2)}.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Entendido'),
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          icon: const Icon(
+            Icons.shopping_bag_outlined,
+            color: AppColors.rosaFuerte,
           ),
-        ],
+          title: const Text('Solicitar recogida'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('¿En cuántos minutos llegarás?'),
+              const SizedBox(height: 12),
+              TextField(
+                controller: minutosController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  suffixText: 'min',
+                  helperText: 'Elige entre 1 y 180 minutos',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                final minutos = int.tryParse(minutosController.text);
+                if (minutos == null || minutos < 1 || minutos > 180) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Ingresa un tiempo de 1 a 180 minutos.'),
+                    ),
+                  );
+                  return;
+                }
+                setDialogState(() {});
+                try {
+                  final folio = await onSolicitar(minutos);
+                  if (!context.mounted) return;
+                  Navigator.pop(dialogContext);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Solicitud $folio registrada correctamente.',
+                      ),
+                    ),
+                  );
+                } catch (error) {
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        error.toString().replaceFirst('Exception: ', ''),
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Enviar solicitud'),
+            ),
+          ],
+        ),
       ),
     );
+    minutosController.dispose();
   }
 }
