@@ -20,7 +20,8 @@ class ProductoService {
     return disponibles().where((p) {
       final coincideCategoria =
           categoria == 'Todos' ||
-          p.categoria == categoria;
+          p.categoria == categoria ||
+          (categoria == 'Helados' && p.categoria == 'Nieves');
 
       final coincideBusqueda =
           p.nombre.toLowerCase().contains(

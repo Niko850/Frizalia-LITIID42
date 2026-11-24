@@ -18,7 +18,7 @@
   "categorias": [
     {
       "id_categoria": 1,
-      "nombre": "Nieves",
+      "nombre": "Helados",
       "activa": true
     },
     {
@@ -28,16 +28,16 @@
     },
     {
       "id_categoria": 3,
-      "nombre": "Helados",
+      "nombre": "Aguas Naturales",
       "activa": true
     }
   ],
   "productos": [
     {
       "id_producto": 1,
-      "nombre": "Nieve de fresa",
+      "nombre": "Helado de fresa",
       "descripcion": "Frutal y cremosa",
-      "categoria": "Nieves",
+      "categoria": "Helados",
       "categoria_id": 1,
       "precio": 35,
       "stock": 17,
@@ -46,9 +46,9 @@
     },
     {
       "id_producto": 2,
-      "nombre": "Nieve de mango",
+      "nombre": "Helado de mango",
       "descripcion": "Con mango natural",
-      "categoria": "Nieves",
+      "categoria": "Helados",
       "categoria_id": 1,
       "precio": 35,
       "stock": 17,
@@ -82,7 +82,7 @@
       "nombre": "Helado de vainilla",
       "descripcion": "Clásico cremoso",
       "categoria": "Helados",
-      "categoria_id": 3,
+      "categoria_id": 1,
       "precio": 42,
       "stock": 15,
       "disponible": true,
@@ -93,11 +93,121 @@
       "nombre": "Helado de chocolate",
       "descripcion": "Chocolate intenso",
       "categoria": "Helados",
-      "categoria_id": 3,
+      "categoria_id": 1,
       "precio": 45,
       "stock": 12,
       "disponible": true,
       "imagen": "🍫"
+    },
+    {
+      "id_producto": 7,
+      "nombre": "Agua de Horchata",
+      "descripcion": "Tradicional y refrescante",
+      "categoria": "Aguas Naturales",
+      "categoria_id": 3,
+      "precio": 25,
+      "stock": 20,
+      "disponible": true,
+      "imagen": "🌾"
+    },
+    {
+      "id_producto": 8,
+      "nombre": "Agua de Fresa",
+      "descripcion": "Natural y frutal",
+      "categoria": "Aguas Naturales",
+      "categoria_id": 3,
+      "precio": 25,
+      "stock": 20,
+      "disponible": true,
+      "imagen": "🍓"
+    },
+    {
+      "id_producto": 9,
+      "nombre": "Agua de Mango",
+      "descripcion": "Natural y tropical",
+      "categoria": "Aguas Naturales",
+      "categoria_id": 3,
+      "precio": 25,
+      "stock": 20,
+      "disponible": true,
+      "imagen": "🥭"
+    },
+    {
+      "id_producto": 10,
+      "nombre": "Agua de Limón",
+      "descripcion": "Natural y refrescante",
+      "categoria": "Aguas Naturales",
+      "categoria_id": 3,
+      "precio": 25,
+      "stock": 20,
+      "disponible": true,
+      "imagen": "🍋"
+    },
+    {
+      "id_producto": 11,
+      "nombre": "Agua de Pitahaya",
+      "descripcion": "Natural y exótica",
+      "categoria": "Aguas Naturales",
+      "categoria_id": 3,
+      "precio": 25,
+      "stock": 20,
+      "disponible": true,
+      "imagen": "🌸"
+    },
+    {
+      "id_producto": 12,
+      "nombre": "Agua de Coco",
+      "descripcion": "Natural y cremosa",
+      "categoria": "Aguas Naturales",
+      "categoria_id": 3,
+      "precio": 25,
+      "stock": 20,
+      "disponible": true,
+      "imagen": "🥥"
+    },
+    {
+      "id_producto": 13,
+      "nombre": "Helado de chocomenta",
+      "descripcion": "Chocolate con menta refrescante",
+      "categoria": "Helados",
+      "categoria_id": 1,
+      "precio": 42,
+      "stock": 15,
+      "disponible": true,
+      "imagen": "🍫"
+    },
+    {
+      "id_producto": 14,
+      "nombre": "Helado de limón",
+      "descripcion": "Cremoso y cítrico",
+      "categoria": "Helados",
+      "categoria_id": 1,
+      "precio": 42,
+      "stock": 15,
+      "disponible": true,
+      "imagen": "🍋"
+    },
+    {
+      "id_producto": 15,
+      "nombre": "Helado napolitano",
+      "descripcion": "Chocolate, vainilla y fresa",
+      "categoria": "Helados",
+      "categoria_id": 1,
+      "precio": 42,
+      "stock": 15,
+      "disponible": true,
+      "imagen": "🍨"
+    },
+    {
+      "id_producto": 16,
+      "nombre": "Helado de capuchino",
+      "descripcion": "Café cremoso con aroma intenso",
+      "categoria": "Helados",
+      "categoria_id": 1,
+      "precio": 42,
+      "stock": 15,
+      "disponible": true,
+      "imagen": "☕"
     }
   ],
   "solicitudes": [
@@ -111,14 +221,14 @@
       "productos": [
         {
           "id_producto": 1,
-          "nombre_producto": "Nieve de fresa",
+          "nombre_producto": "Helado de fresa",
           "cantidad": 1,
           "precio_unitario": 35,
           "subtotal": 35
         },
         {
           "id_producto": 2,
-          "nombre_producto": "Nieve de mango",
+          "nombre_producto": "Helado de mango",
           "cantidad": 1,
           "precio_unitario": 35,
           "subtotal": 35
@@ -143,7 +253,7 @@
       "productos": [
         {
           "id_producto": 1,
-          "nombre_producto": "Nieve de fresa",
+          "nombre_producto": "Helado de fresa",
           "cantidad": 2,
           "precio_unitario": 35,
           "subtotal": 70

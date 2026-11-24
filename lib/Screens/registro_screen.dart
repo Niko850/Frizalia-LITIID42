@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frizalia/Screens/Pantalla_principal.dart';
+import 'package:frizalia/Screens/pantalla_principal.dart';
 import 'package:frizalia/Services/api_service.dart';
 
 class RegistroScreen extends StatefulWidget {

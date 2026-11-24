@@ -122,11 +122,19 @@ class ApiService {
     final data = await _request('GET', '/categorias/activas');
     if (data is! List) return [];
 
-    return data
+    final categorias = data
         .whereType<Map<String, dynamic>>()
         .map((categoria) => categoria['nombre'])
         .whereType<String>()
+        .map((nombre) => nombre == 'Nieves' ? 'Helados' : nombre)
+        .toSet()
         .toList();
+
+    if (!categorias.contains('Aguas Naturales')) {
+      categorias.add('Aguas Naturales');
+    }
+
+    return categorias;
   }
 
   Future<void> iniciarSesion({

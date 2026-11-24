@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frizalia/Screens/Pantalla_principal.dart';
+import 'package:frizalia/Screens/pantalla_principal.dart';
 import 'package:frizalia/Screens/registro_screen.dart';
 import 'package:frizalia/Services/api_service.dart';
 
@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 7),
 
                     const Text(
-                      'Paletería, Nieves y más...',
+                      'Paletería, Helados y más...',
                       style: TextStyle(fontSize: 16, color: Color(0xFF777177)),
                     ),
 

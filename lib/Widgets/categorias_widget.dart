@@ -12,7 +12,7 @@ class CategoriasWidget extends StatelessWidget {
     this.categorias = const [
       'Paletas',
       'Helados',
-      'Nieves',
+      'Aguas Naturales',
       'Pasteles',
       'Bebidas',
       'Otros',
@@ -29,8 +29,8 @@ class CategoriasWidget extends StatelessWidget {
           return '🍭';
         case 'helados':
           return '🍨';
-        case 'nieves':
-          return '🍧';
+        case 'aguas naturales':
+          return '🥤';
         case 'bebidas':
           return '🥤';
         case 'pasteles':

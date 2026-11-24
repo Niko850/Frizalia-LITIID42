@@ -22,12 +22,13 @@ class Producto {
   factory Producto.fromJson(Map<String, dynamic> json) {
     final imagenUrl = json['imagen_url'] ?? json['imagenUrl'];
     final imagen = json['imagen'];
+    final categoriaRaw = '${json['categoria'] ?? ''}';
 
     return Producto(
       id: (json['id_producto'] ?? json['id'] ?? 0) as int,
       nombre: (json['nombre'] ?? '') as String,
       descripcion: (json['descripcion'] ?? json['presentacion'] ?? '') as String,
-      categoria: (json['categoria'] ?? '') as String,
+      categoria: categoriaRaw == 'Nieves' ? 'Helados' : categoriaRaw,
       precio: double.tryParse('${json['precio'] ?? 0}') ?? 0,
       stock: int.tryParse('${json['stock'] ?? 0}') ?? 0,
       imagen: imagen is String && imagen.isNotEmpty ? imagen : '🍦',
