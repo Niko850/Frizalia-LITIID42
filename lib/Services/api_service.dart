@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -13,18 +14,18 @@ class ApiService {
   String? _token;
   Map<String, dynamic>? usuario;
 
-  String get _baseUrl {
+  String get baseUrl {
     if (_configuredUrl.isNotEmpty) {
-      return _configuredUrl.replaceFirst(RegExp(r'/+$'), '');
+      return _configuredUrl.trim().replaceFirst(RegExp(r'/+$'), '');
     }
 
-    if (kIsWeb) return 'http://localhost:3000/api';
+    if (kIsWeb) return 'http://127.0.0.1:3000/api';
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return 'http://10.0.2.2:3000/api';
       case TargetPlatform.iOS:
-        return 'http://localhost:3000/api';
+        return 'http://127.0.0.1:3000/api';
       default:
         return 'http://127.0.0.1:3000/api';
     }
@@ -41,7 +42,18 @@ class ApiService {
     String path, {
     Map<String, dynamic>? body,
   }) async {
-    final uri = Uri.parse('$_baseUrl$path');
+    late final Uri uri;
+    try {
+      uri = Uri.parse('$baseUrl$path');
+      if (!uri.hasScheme || uri.host.isEmpty) {
+        throw const FormatException();
+      }
+    } on FormatException {
+      throw Exception(
+        'La URL de la API no es válida. Configura API_BASE_URL con una dirección completa.',
+      );
+    }
+
     final encodedBody = body == null ? null : jsonEncode(body);
     late final http.Response response;
 
@@ -50,27 +62,44 @@ class ApiService {
         case 'POST':
           response = await http
               .post(uri, headers: _headers, body: encodedBody)
-              .timeout(const Duration(seconds: 15));
+              .timeout(const Duration(seconds: 20));
         default:
           response = await http
               .get(uri, headers: _headers)
-              .timeout(const Duration(seconds: 15));
+              .timeout(const Duration(seconds: 20));
       }
+    } on TimeoutException {
+      throw Exception(
+        'La API tardó demasiado en responder. Verifica que el servidor esté activo.',
+      );
     } on Exception {
       throw Exception(
-        'No se pudo conectar con Frizalia. Revisa la URL de la API y que el servidor esté activo.',
+        'No se pudo conectar con Frizalia en $baseUrl. Verifica la URL y que el servidor esté activo.',
       );
     }
 
-    final dynamic data = response.body.isEmpty
-        ? null
-        : jsonDecode(response.body);
+    dynamic data;
+    if (response.body.isNotEmpty) {
+      try {
+        data = jsonDecode(response.body);
+      } on FormatException {
+        throw Exception('La API respondió con un formato no válido.');
+      }
+    }
+
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      final mensaje = data is Map<String, dynamic>
-          ? data['mensaje'] as String? ?? 'La solicitud no pudo completarse.'
-          : 'La solicitud no pudo completarse.';
+      String mensaje = 'La solicitud no pudo completarse.';
+      if (data is Map<String, dynamic>) {
+        mensaje = data['mensaje'] as String? ??
+            data['error'] as String? ??
+            mensaje;
+      }
+      if (response.statusCode == 401) {
+        cerrarSesion();
+      }
       throw Exception(mensaje);
     }
+
     return data;
   }
 

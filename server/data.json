@@ -1,0 +1,155 @@
+{
+  "usuarios": [
+    {
+      "id_usuario": 1,
+      "nombre": "Cliente Prueba",
+      "correo": "prueba@frizalia.local",
+      "telefono": "9987000000",
+      "password_hash": "99e1de4b1b499c12f3775cbe6f69120f:47f7e4fa24a5f340b8b982869ab19986a1282aa4b866993b817880c3f437673f25a7f2c138d690312750e3ff288fb2043875fa744e96b3b76755653fa269dfe4"
+    },
+    {
+      "id_usuario": 2,
+      "nombre": "Lizbeth Lopez",
+      "correo": "fanny@gmail.com",
+      "telefono": "9980000000",
+      "password_hash": "85f7b0d30a6bfecb032248ea6ea9441e:896c6b10a1525b05d7f9d4a16013b38450d6b9285139f6d621aee89340256c1f838473a17835b02afa4ee248f63d3ab6ca012057313efa667baaa92401be8901"
+    }
+  ],
+  "categorias": [
+    {
+      "id_categoria": 1,
+      "nombre": "Nieves",
+      "activa": true
+    },
+    {
+      "id_categoria": 2,
+      "nombre": "Paletas",
+      "activa": true
+    },
+    {
+      "id_categoria": 3,
+      "nombre": "Helados",
+      "activa": true
+    }
+  ],
+  "productos": [
+    {
+      "id_producto": 1,
+      "nombre": "Nieve de fresa",
+      "descripcion": "Frutal y cremosa",
+      "categoria": "Nieves",
+      "categoria_id": 1,
+      "precio": 35,
+      "stock": 17,
+      "disponible": true,
+      "imagen": "🍓"
+    },
+    {
+      "id_producto": 2,
+      "nombre": "Nieve de mango",
+      "descripcion": "Con mango natural",
+      "categoria": "Nieves",
+      "categoria_id": 1,
+      "precio": 35,
+      "stock": 17,
+      "disponible": true,
+      "imagen": "🥭"
+    },
+    {
+      "id_producto": 3,
+      "nombre": "Paleta de coco",
+      "descripcion": "Coco con leche",
+      "categoria": "Paletas",
+      "categoria_id": 2,
+      "precio": 28,
+      "stock": 29,
+      "disponible": true,
+      "imagen": "🥥"
+    },
+    {
+      "id_producto": 4,
+      "nombre": "Paleta de limón",
+      "descripcion": "Refrescante y ácida",
+      "categoria": "Paletas",
+      "categoria_id": 2,
+      "precio": 25,
+      "stock": 25,
+      "disponible": true,
+      "imagen": "🍋"
+    },
+    {
+      "id_producto": 5,
+      "nombre": "Helado de vainilla",
+      "descripcion": "Clásico cremoso",
+      "categoria": "Helados",
+      "categoria_id": 3,
+      "precio": 42,
+      "stock": 15,
+      "disponible": true,
+      "imagen": "🍦"
+    },
+    {
+      "id_producto": 6,
+      "nombre": "Helado de chocolate",
+      "descripcion": "Chocolate intenso",
+      "categoria": "Helados",
+      "categoria_id": 3,
+      "precio": 45,
+      "stock": 12,
+      "disponible": true,
+      "imagen": "🍫"
+    }
+  ],
+  "solicitudes": [
+    {
+      "id_solicitud": 2,
+      "folio": "FRZ-000002",
+      "id_usuario": 2,
+      "estado": "PENDIENTE",
+      "fecha_solicitud": "2026-11-24T17:33:56.534Z",
+      "minutos_llegada": 20,
+      "productos": [
+        {
+          "id_producto": 1,
+          "nombre_producto": "Nieve de fresa",
+          "cantidad": 1,
+          "precio_unitario": 35,
+          "subtotal": 35
+        },
+        {
+          "id_producto": 2,
+          "nombre_producto": "Nieve de mango",
+          "cantidad": 1,
+          "precio_unitario": 35,
+          "subtotal": 35
+        },
+        {
+          "id_producto": 3,
+          "nombre_producto": "Paleta de coco",
+          "cantidad": 1,
+          "precio_unitario": 28,
+          "subtotal": 28
+        }
+      ],
+      "total": 98
+    },
+    {
+      "id_solicitud": 1,
+      "folio": "FRZ-000001",
+      "id_usuario": 1,
+      "estado": "PENDIENTE",
+      "fecha_solicitud": "2026-11-24T17:26:23.127Z",
+      "minutos_llegada": 30,
+      "productos": [
+        {
+          "id_producto": 1,
+          "nombre_producto": "Nieve de fresa",
+          "cantidad": 2,
+          "precio_unitario": 35,
+          "subtotal": 70
+        }
+      ],
+      "total": 70
+    }
+  ]
+}
