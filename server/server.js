@@ -40,9 +40,30 @@ const seedData = {
   solicitudes: [],
 };
 
+function normalizarTextoGuardado(value) {
+  if (typeof value === 'string') {
+    return value.replace(/\s*Â·\s*/g, ' - ').replace(/\s*·\s*/g, ' - ');
+  }
+  if (Array.isArray(value)) {
+    return value.map(normalizarTextoGuardado);
+  }
+  if (value && typeof value === 'object') {
+    for (const [key, child] of Object.entries(value)) {
+      value[key] = normalizarTextoGuardado(child);
+    }
+  }
+  return value;
+}
+
 async function loadData() {
   try {
-    return JSON.parse(await fs.readFile(DATA_FILE, 'utf8'));
+    const raw = await fs.readFile(DATA_FILE, 'utf8');
+    const loaded = JSON.parse(raw);
+    const normalized = normalizarTextoGuardado(loaded);
+    if (JSON.stringify(normalized) !== raw) {
+      await fs.writeFile(DATA_FILE, JSON.stringify(normalized, null, 2));
+    }
+    return normalized;
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
     await fs.writeFile(DATA_FILE, JSON.stringify(seedData, null, 2));

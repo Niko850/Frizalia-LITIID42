@@ -56,7 +56,7 @@
       "precio": 35,
       "stock": 15,
       "disponible": true,
-      "imagen": "ðŸ“"
+      "imagen": "🍓"
     },
     {
       "id_producto": 2,
@@ -67,7 +67,7 @@
       "precio": 35,
       "stock": 17,
       "disponible": true,
-      "imagen": "ðŸ¥­"
+      "imagen": "🥭"
     },
     {
       "id_producto": 3,
@@ -78,29 +78,29 @@
       "precio": 28,
       "stock": 28,
       "disponible": true,
-      "imagen": "ðŸ¥¥"
+      "imagen": "🥥"
     },
     {
       "id_producto": 4,
-      "nombre": "Paleta de limÃ³n",
-      "descripcion": "Refrescante y Ã¡cida",
+      "nombre": "Paleta de limón",
+      "descripcion": "Refrescante y ácida",
       "categoria": "Paletas",
       "categoria_id": 2,
       "precio": 25,
       "stock": 25,
       "disponible": true,
-      "imagen": "ðŸ‹"
+      "imagen": "🍋"
     },
     {
       "id_producto": 5,
       "nombre": "Helado de vainilla",
-      "descripcion": "ClÃ¡sico cremoso",
+      "descripcion": "Clásico cremoso",
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 42,
       "stock": 13,
       "disponible": true,
-      "imagen": "ðŸ¦"
+      "imagen": "🍦"
     },
     {
       "id_producto": 6,
@@ -111,7 +111,7 @@
       "precio": 45,
       "stock": 12,
       "disponible": true,
-      "imagen": "ðŸ«"
+      "imagen": "🍫"
     },
     {
       "id_producto": 7,
@@ -122,7 +122,7 @@
       "precio": 25,
       "stock": 20,
       "disponible": true,
-      "imagen": "ðŸŒ¾"
+      "imagen": "🌾"
     },
     {
       "id_producto": 8,
@@ -133,7 +133,7 @@
       "precio": 25,
       "stock": 18,
       "disponible": true,
-      "imagen": "ðŸ“"
+      "imagen": "🍓"
     },
     {
       "id_producto": 9,
@@ -144,29 +144,29 @@
       "precio": 25,
       "stock": 20,
       "disponible": true,
-      "imagen": "ðŸ¥­"
+      "imagen": "🥭"
     },
     {
       "id_producto": 10,
-      "nombre": "Agua de LimÃ³n",
+      "nombre": "Agua de Limón",
       "descripcion": "Natural y refrescante",
       "categoria": "Aguas Naturales",
       "categoria_id": 3,
       "precio": 25,
       "stock": 20,
       "disponible": true,
-      "imagen": "ðŸ‹"
+      "imagen": "🍋"
     },
     {
       "id_producto": 11,
       "nombre": "Agua de Pitahaya",
-      "descripcion": "Natural y exÃ³tica",
+      "descripcion": "Natural y exótica",
       "categoria": "Aguas Naturales",
       "categoria_id": 3,
       "precio": 25,
       "stock": 20,
       "disponible": true,
-      "imagen": "ðŸŒ¸"
+      "imagen": "🌸"
     },
     {
       "id_producto": 12,
@@ -177,7 +177,7 @@
       "precio": 25,
       "stock": 19,
       "disponible": true,
-      "imagen": "ðŸ¥¥"
+      "imagen": "🥥"
     },
     {
       "id_producto": 13,
@@ -188,18 +188,18 @@
       "precio": 42,
       "stock": 15,
       "disponible": true,
-      "imagen": "ðŸ«"
+      "imagen": "🍫"
     },
     {
       "id_producto": 14,
-      "nombre": "Helado de limÃ³n",
-      "descripcion": "Cremoso y cÃ­trico",
+      "nombre": "Helado de limón",
+      "descripcion": "Cremoso y cítrico",
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 42,
       "stock": 15,
       "disponible": true,
-      "imagen": "ðŸ‹"
+      "imagen": "🍋"
     },
     {
       "id_producto": 15,
@@ -210,18 +210,18 @@
       "precio": 42,
       "stock": 15,
       "disponible": true,
-      "imagen": "ðŸ¨"
+      "imagen": "🍨"
     },
     {
       "id_producto": 16,
       "nombre": "Helado de capuchino",
-      "descripcion": "CafÃ© cremoso con aroma intenso",
+      "descripcion": "Café cremoso con aroma intenso",
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 42,
       "stock": 15,
       "disponible": true,
-      "imagen": "â˜•"
+      "imagen": "☕"
     },
     {
       "id_producto": 17,
@@ -232,7 +232,7 @@
       "precio": 28,
       "stock": 18,
       "disponible": true,
-      "imagen": "ðŸ‡"
+      "imagen": "🍇"
     },
     {
       "id_producto": 18,
@@ -243,18 +243,18 @@
       "precio": 28,
       "stock": 18,
       "disponible": true,
-      "imagen": "ðŸ“"
+      "imagen": "🍓"
     },
     {
       "id_producto": 19,
-      "nombre": "Paleta de piÃ±a",
+      "nombre": "Paleta de piña",
       "descripcion": "Tropical y refrescante",
       "categoria": "Paletas",
       "categoria_id": 2,
       "precio": 28,
       "stock": 20,
       "disponible": true,
-      "imagen": "ðŸ"
+      "imagen": "🍍"
     }
   ],
   "solicitudes": [
@@ -293,21 +293,21 @@
       "productos": [
         {
           "id_producto": 1,
-          "nombre_producto": "Helado de fresa Â· Mediano Â· Chispas de colores",
+          "nombre_producto": "Helado de fresa - Mediano - Chispas de colores",
           "cantidad": 1,
           "precio_unitario": 25,
           "subtotal": 25
         },
         {
           "id_producto": 5,
-          "nombre_producto": "Helado de vainilla Â· Grande Â· Jarabe de chocolate, Chispas de colores",
+          "nombre_producto": "Helado de vainilla - Grande - Jarabe de chocolate, Chispas de colores",
           "cantidad": 2,
           "precio_unitario": 33,
           "subtotal": 66
         },
         {
           "id_producto": 8,
-          "nombre_producto": "Agua de Fresa Â· Grande",
+          "nombre_producto": "Agua de Fresa - Grande",
           "cantidad": 1,
           "precio_unitario": 60,
           "subtotal": 60
@@ -332,14 +332,14 @@
       "productos": [
         {
           "id_producto": 1,
-          "nombre_producto": "Helado de fresa Â· Mediano Â· Chispas de chocolate, Jarabe de chocolate",
+          "nombre_producto": "Helado de fresa - Mediano - Chispas de chocolate, Jarabe de chocolate",
           "cantidad": 2,
           "precio_unitario": 30,
           "subtotal": 60
         },
         {
           "id_producto": 2,
-          "nombre_producto": "Helado de mango Â· Mediano Â· Chispas de colores",
+          "nombre_producto": "Helado de mango - Mediano - Chispas de colores",
           "cantidad": 1,
           "precio_unitario": 25,
           "subtotal": 25
@@ -353,14 +353,14 @@
         },
         {
           "id_producto": 8,
-          "nombre_producto": "Agua de Fresa Â· Mediano",
+          "nombre_producto": "Agua de Fresa - Mediano",
           "cantidad": 1,
           "precio_unitario": 43,
           "subtotal": 43
         },
         {
           "id_producto": 12,
-          "nombre_producto": "Agua de Coco Â· Grande",
+          "nombre_producto": "Agua de Coco - Grande",
           "cantidad": 1,
           "precio_unitario": 60,
           "subtotal": 60
@@ -378,28 +378,28 @@
       "productos": [
         {
           "id_producto": 1,
-          "nombre_producto": "Helado de fresa Â· Grande Â· Chispas de chocolate, Chispas de colores, Jarabe de chocolate",
+          "nombre_producto": "Helado de fresa - Grande - Chispas de chocolate, Chispas de colores, Jarabe de chocolate",
           "cantidad": 1,
           "precio_unitario": 38,
           "subtotal": 38
         },
         {
           "id_producto": 4,
-          "nombre_producto": "Paleta de limÃ³n",
+          "nombre_producto": "Paleta de limón",
           "cantidad": 1,
           "precio_unitario": 25,
           "subtotal": 25
         },
         {
           "id_producto": 6,
-          "nombre_producto": "Helado de chocolate Â· Mediano Â· Jarabe de chocolate, Chispas de colores",
+          "nombre_producto": "Helado de chocolate - Mediano - Jarabe de chocolate, Chispas de colores",
           "cantidad": 1,
           "precio_unitario": 30,
           "subtotal": 30
         },
         {
           "id_producto": 7,
-          "nombre_producto": "Agua de Horchata Â· Grande",
+          "nombre_producto": "Agua de Horchata - Grande",
           "cantidad": 1,
           "precio_unitario": 60,
           "subtotal": 60
