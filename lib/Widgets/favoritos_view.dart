@@ -7,40 +7,78 @@ class FavoritosView extends StatelessWidget {
     super.key,
     required this.catalogo,
     required this.frecuenciaPedidos,
-    required this.favoritosManuales,
     required this.isLoading,
-    required this.onToggleFavorito,
     required this.onAgregar,
     required this.onExplorar,
+    this.favoritosManuales = const {},
+    this.onToggleFavorito,
   });
 
   final List<Producto> catalogo;
   final Map<String, int> frecuenciaPedidos;
-  final Set<String> favoritosManuales;
   final bool isLoading;
-  final void Function(String nombreProducto) onToggleFavorito;
   final void Function(Producto producto) onAgregar;
   final VoidCallback onExplorar;
 
+  // Opcionales para mantener compatibilidad si HomeScreen los sigue pasando
+  final Set<String> favoritosManuales;
+  final void Function(String nombreProducto)? onToggleFavorito;
+
+  Producto? _buscarProductoEnCatalogo(String nombre) {
+    final limpio = nombre.trim().toLowerCase();
+    if (limpio.isEmpty) return null;
+
+    for (final p in catalogo) {
+      if (p.nombre.trim().toLowerCase() == limpio) {
+        return p;
+      }
+    }
+
+    // Si viene con tamaño/toppings (ej. "Helado de fresa - Mediano - ..."),
+    // intenta encontrar el producto base en el catálogo.
+    final base = limpio.split(' - ').first.trim();
+    if (base.isNotEmpty) {
+      for (final p in catalogo) {
+        final pNombre = p.nombre.trim().toLowerCase();
+        if (pNombre == base || limpio.startsWith(pNombre)) {
+          return p;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  Producto _construirProductoRespaldo(String nombre, Producto? base) {
+    return Producto(
+      id: base?.id ?? nombre.hashCode.abs(),
+      nombre: nombre,
+      descripcion: base?.descripcion ?? '',
+      categoria: base?.categoria ?? 'Favoritos',
+      precio: base?.precio ?? 0.0,
+      stock: base?.stock ?? 99,
+      imagen: base?.imagen ?? '🍦',
+      imagenUrl: base?.imagenUrl,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final nombresCandidatos = <String>{
-      ...frecuenciaPedidos.keys,
-      ...favoritosManuales,
-    }.toList();
+    final masPedidos = frecuenciaPedidos.entries
+        .where((entry) => entry.value >= 2)
+        .toList();
 
-    nombresCandidatos.sort((a, b) {
-      final freqA = frecuenciaPedidos[a] ?? 0;
-      final freqB = frecuenciaPedidos[b] ?? 0;
-      if (freqB != freqA) return freqB.compareTo(freqA);
-      return a.compareTo(b);
+    masPedidos.sort((a, b) {
+      final cmp = b.value.compareTo(a.value);
+      if (cmp != 0) return cmp;
+      return a.key.compareTo(b.key);
     });
 
-    if (isLoading && nombresCandidatos.isEmpty) {
+    if (isLoading && masPedidos.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (nombresCandidatos.isEmpty) {
+    if (masPedidos.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(28),
@@ -48,13 +86,14 @@ class FavoritosView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(
-                Icons.favorite_border_rounded,
+                Icons.local_fire_department_outlined,
                 size: 58,
                 color: AppColors.rosaFuerte,
               ),
               const SizedBox(height: 14),
               const Text(
-                'Aún no tienes favoritos',
+                'Aún no tienes productos con 2 o más pedidos',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.texto,
                   fontWeight: FontWeight.bold,
@@ -63,7 +102,7 @@ class FavoritosView extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               const Text(
-                'Aquí aparecerán tus productos más pedidos y favoritos.',
+                'Cuando repitas un producto al menos 2 veces, aparecerá aquí.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.gris),
               ),
@@ -86,7 +125,7 @@ class FavoritosView extends StatelessWidget {
     }
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 96),
       children: [
         const Text(
           'Favoritos',
@@ -98,21 +137,18 @@ class FavoritosView extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         const Text(
-          'Tus productos más pedidos',
+          'Productos pedidos 2 o más veces',
           style: TextStyle(color: AppColors.gris, fontSize: 13.5),
         ),
         const SizedBox(height: 16),
-        ...nombresCandidatos.map((nombre) {
-          final vecesPedido = frecuenciaPedidos[nombre] ?? 0;
-          final esFavoritoManual = favoritosManuales.contains(nombre);
-
-          Producto? productoMatch;
-          for (final p in catalogo) {
-            if (p.nombre.toLowerCase() == nombre.toLowerCase()) {
-              productoMatch = p;
-              break;
-            }
-          }
+        ...masPedidos.map((entry) {
+          final nombre = entry.key;
+          final vecesPedido = entry.value;
+          final productoMatch = _buscarProductoEnCatalogo(nombre);
+          final productoParaCarrito = _construirProductoRespaldo(
+            nombre,
+            productoMatch,
+          );
 
           return Container(
             margin: const EdgeInsets.only(bottom: 12),
@@ -142,8 +178,8 @@ class FavoritosView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        productoMatch?.nombre ?? nombre,
-                        maxLines: 1,
+                        nombre,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: AppColors.texto,
@@ -153,9 +189,7 @@ class FavoritosView extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        vecesPedido > 0
-                            ? 'Pedido $vecesPedido ${vecesPedido == 1 ? 'vez' : 'veces'}'
-                            : 'Marcado como favorito',
+                        'Pedido $vecesPedido veces',
                         style: const TextStyle(
                           color: AppColors.gris,
                           fontSize: 12.5,
@@ -176,22 +210,13 @@ class FavoritosView extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => onToggleFavorito(nombre),
-                  icon: Icon(
-                    esFavoritoManual || vecesPedido > 0
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded,
+                  tooltip: 'Agregar al carrito',
+                  onPressed: () => onAgregar(productoParaCarrito),
+                  icon: const Icon(
+                    Icons.add_shopping_cart_rounded,
                     color: AppColors.rosaFuerte,
                   ),
                 ),
-                if (productoMatch != null)
-                  IconButton(
-                    onPressed: () => onAgregar(productoMatch!),
-                    icon: const Icon(
-                      Icons.add_shopping_cart_rounded,
-                      color: AppColors.texto,
-                    ),
-                  ),
               ],
             ),
           );
