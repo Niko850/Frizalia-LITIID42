@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:frizalia/Screens/lista_screen.dart';
 import 'package:frizalia/Screens/login_screen.dart';
 import 'package:frizalia/Screens/perfil_screen.dart';
 
@@ -11,6 +12,7 @@ import 'package:frizalia/Utils/app_colors.dart';
 import 'package:frizalia/Widgets/bottom_nav_widget.dart';
 import 'package:frizalia/Widgets/favoritos_view.dart';
 import 'package:frizalia/Widgets/home_view.dart';
+import 'package:frizalia/Widgets/pedidos_recientes_sheet.dart';
 import 'package:frizalia/Widgets/productos_grid.dart';
 import 'package:frizalia/Widgets/search_view.dart';
 
@@ -38,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool cargandoCatalogo = true;
   String? errorCatalogo;
 
-  /// Contador de veces que el usuario ha pedido cada producto (clave: nombre o id)
   final Map<String, int> frecuenciaPedidos = {};
   final Set<String> favoritosManuales = {};
   bool cargandoFavoritos = false;
@@ -84,13 +85,16 @@ class _HomeScreenState extends State<HomeScreen> {
       final conteo = <String, int>{};
 
       for (final solicitud in solicitudes) {
-        final detalles = (solicitud['productos'] as List? ?? [])
-            .whereType<Map<String, dynamic>>();
-        for (final item in detalles) {
-          final nombre = '${item['nombre_producto'] ?? ''}'.trim();
-          if (nombre.isEmpty) continue;
-          final cantidad = int.tryParse('${item['cantidad'] ?? 1}') ?? 1;
-          conteo[nombre] = (conteo[nombre] ?? 0) + (cantidad > 0 ? cantidad : 1);
+        final rawProductos = solicitud['productos'];
+        if (rawProductos is List) {
+          for (final rawItem in rawProductos) {
+            if (rawItem is! Map) continue;
+            final nombre = '${rawItem['nombre_producto'] ?? ''}'.trim();
+            if (nombre.isEmpty) continue;
+            final cantidad = int.tryParse('${rawItem['cantidad'] ?? 1}') ?? 1;
+            conteo[nombre] =
+                (conteo[nombre] ?? 0) + (cantidad > 0 ? cantidad : 1);
+          }
         }
       }
 
@@ -102,7 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (_) {
-      // Si falla la carga de historial, se mantiene lo que haya en favoritosManuales
     } finally {
       if (mounted) setState(() => cargandoFavoritos = false);
     }
@@ -123,11 +126,13 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Producto> get filtrados =>
       productoService.filtrados(categoria: categoria, busqueda: busqueda);
 
+  int get totalUnidadesCarrito =>
+      seleccionados.values.fold(0, (acc, cant) => acc + cant);
+
   void cambiarPagina(int nuevaPagina) {
     setState(() {
       pagina = nuevaPagina;
     });
-    // Refresca los más pedidos al entrar a la pestaña de Favoritos
     if (nuevaPagina == 2) {
       cargarMasPedidos();
     }
@@ -146,6 +151,56 @@ class _HomeScreenState extends State<HomeScreen> {
     mostrarMensaje('${producto.nombre} agregado al carrito');
   }
 
+  void abrirCarrito() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => StatefulBuilder(
+          builder: (context, setModalState) {
+            return ListaScreen(
+              productos: productoService.seleccionadosLista(),
+              cantidades: seleccionados,
+              subtotal: productoService.totalCompra(),
+              onDisminuir: (producto) {
+                setState(() {
+                  productoService.cambiarCantidad(producto, -1);
+                });
+                setModalState(() {});
+              },
+              onAumentar: (producto) {
+                final agregado = productoService.agregarProducto(producto);
+                if (!agregado) {
+                  mostrarMensaje('No hay más unidades disponibles');
+                  return;
+                }
+                setState(() {});
+                setModalState(() {});
+              },
+              onBuscar: () {
+                Navigator.pop(context);
+                cambiarPagina(1);
+              },
+              onSolicitar: (minutosLlegada) async {
+                final respuesta = await ApiService.instance.crearSolicitud(
+                  productos: productoService.seleccionadosLista(),
+                  cantidades: seleccionados,
+                  minutosLlegada: minutosLlegada,
+                );
+                productoService.vaciarLista();
+                if (mounted) {
+                  setState(() {});
+                  cargarMasPedidos();
+                }
+                setModalState(() {});
+                return respuesta['folio'] as String? ?? 'registrada';
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   void mostrarMensaje(String mensaje) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(mensaje)));
@@ -162,6 +217,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cantidadCarrito = totalUnidadesCarrito;
+
     return Scaffold(
       backgroundColor: AppColors.fondo,
 
@@ -248,6 +305,48 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+      ),
+
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            heroTag: 'btnPedidosRecientes',
+            onPressed: () => mostrarPedidosRecientesSheet(
+              context: context,
+              onMensaje: mostrarMensaje,
+            ),
+            backgroundColor: Colors.white,
+            foregroundColor: AppColors.texto,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: const BorderSide(color: AppColors.borde),
+            ),
+            icon: const Icon(
+              Icons.receipt_long_rounded,
+              color: AppColors.rosaFuerte,
+            ),
+            label: const Text(
+              'Pedidos recientes',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          if (cantidadCarrito > 0) ...[
+            const SizedBox(height: 10),
+            FloatingActionButton.extended(
+              heroTag: 'btnCarrito',
+              onPressed: abrirCarrito,
+              backgroundColor: AppColors.rosaFuerte,
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.shopping_bag_rounded),
+              label: Text(
+                'Carrito ($cantidadCarrito) · \$${productoService.totalCompra().toStringAsFixed(2)}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ],
       ),
 
       bottomNavigationBar: BottomNavWidget(

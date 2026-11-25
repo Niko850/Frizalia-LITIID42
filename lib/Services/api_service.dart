@@ -209,6 +209,21 @@ class ApiService {
         .toList();
   }
 
+  Future<void> actualizarTiempoLlegada({
+    required int idSolicitud,
+    required int minutosLlegada,
+  }) async {
+    await _request(
+      'POST',
+      '/solicitudes/$idSolicitud/tiempo-llegada',
+      body: {'minutos_llegada': minutosLlegada},
+    );
+  }
+
+  Future<void> cancelarSolicitud({required int idSolicitud}) async {
+    await _request('POST', '/solicitudes/$idSolicitud/cancelar');
+  }
+
   void cerrarSesion() {
     _token = null;
     usuario = null;

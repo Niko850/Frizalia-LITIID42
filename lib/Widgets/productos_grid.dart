@@ -58,7 +58,7 @@ class _ProductosGridState extends State<ProductosGrid> {
                       Navigator.pop(
                         dialogContext,
                         producto.copyWith(
-                          nombre: '${producto.nombre} · Grande',
+                          nombre: '${producto.nombre} - Grande',
                           precio: 60,
                         ),
                       );
@@ -103,7 +103,7 @@ class _ProductosGridState extends State<ProductosGrid> {
             ),
           ),
           const SizedBox(height: 8),
-          const Text('🥤', style: TextStyle(fontSize: 38)),
+          const Icon(Icons.local_drink, size: 38),
           const SizedBox(height: 8),
           Text(
             precio,
@@ -195,8 +195,7 @@ class _ProductosGridState extends State<ProductosGrid> {
                                           ),
                                         ),
                                         const SizedBox(height: 5),
-                                        const Text('🍦',
-                                            style: TextStyle(fontSize: 28)),
+                                        const Icon(Icons.icecream, size: 28),
                                         Text(
                                           '\$${opcion.$2}',
                                           style: const TextStyle(
@@ -278,12 +277,12 @@ class _ProductosGridState extends State<ProductosGrid> {
                   onPressed: () {
                     final toppings = toppingsSeleccionados.isEmpty
                         ? ''
-                        : ' · ${toppingsSeleccionados.join(', ')}';
+                        : ' - ${toppingsSeleccionados.join(', ')}';
                     Navigator.pop(
                       dialogContext,
                       producto.copyWith(
                         nombre:
-                            '${producto.nombre} · $tamano$toppings',
+                            '${producto.nombre} - $tamano$toppings',
                         precio: calcularPrecio(),
                       ),
                     );
@@ -303,6 +302,67 @@ class _ProductosGridState extends State<ProductosGrid> {
     if (seleccionado != null) {
       widget.onAgregar(seleccionado);
     }
+  }
+
+  Widget _contenidoImagenProducto(Producto producto) {
+    if (producto.imagenUrl != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Image.network(
+          producto.imagenUrl!,
+          width: double.infinity,
+          height: 115,
+          fit: BoxFit.cover,
+          errorBuilder: (_, _, _) => _iconoProducto(producto),
+        ),
+      );
+    }
+
+    return _iconoProducto(producto);
+  }
+
+  Widget _iconoProducto(Producto producto) {
+    final nombre = producto.nombre.toLowerCase();
+    String emoji;
+
+    if (nombre.contains('fresa')) {
+      emoji = '🍓';
+    } else if (nombre.contains('mango')) {
+      emoji = '🥭';
+    } else if (nombre.contains('coco')) {
+      emoji = '🥥';
+    } else if (nombre.contains('limón') || nombre.contains('limon')) {
+      emoji = '🍋';
+    } else if (nombre.contains('vainilla')) {
+      emoji = '🍦';
+    } else if (nombre.contains('chocomenta') || nombre.contains('menta')) {
+      emoji = '🌿';
+    } else if (nombre.contains('chocolate') || nombre.contains('chocomenta')) {
+      emoji = '🍫';
+    } else if (nombre.contains('napolitano')) {
+      emoji = '🍨';
+    } else if (nombre.contains('capuchino') || nombre.contains('café') || nombre.contains('cafe')) {
+      emoji = '☕';
+    } else if (nombre.contains('horchata')) {
+      emoji = '🌾';
+    } else if (nombre.contains('pitahaya')) {
+      emoji = '🌸';
+    } else if (nombre.contains('uva')) {
+      emoji = '🍇';
+    } else if (nombre.contains('piña') || nombre.contains('pina')) {
+      emoji = '🍍';
+    } else if (producto.categoria == 'Aguas Naturales') {
+      emoji = '🥤';
+    } else if (producto.categoria == 'Paletas') {
+      emoji = '🍡';
+    } else {
+      emoji = '🍦';
+    }
+
+    return Text(
+      emoji,
+      style: const TextStyle(fontSize: 58),
+    );
   }
 
   @override
@@ -380,24 +440,7 @@ class _ProductosGridState extends State<ProductosGrid> {
                       : AppColors.amarilloSuave,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: producto.imagenUrl == null
-                    ? Text(
-                        producto.imagen,
-                        style: const TextStyle(fontSize: 55),
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Image.network(
-                          producto.imagenUrl!,
-                          width: double.infinity,
-                          height: 115,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => Text(
-                            producto.imagen,
-                            style: const TextStyle(fontSize: 55),
-                          ),
-                        ),
-                      ),
+                child: _contenidoImagenProducto(producto),
               ),
 
               const SizedBox(height: 10),

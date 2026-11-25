@@ -289,7 +289,7 @@
       "id_usuario": 2,
       "estado": "PENDIENTE",
       "fecha_solicitud": "2026-11-25T00:22:29.093Z",
-      "minutos_llegada": 15,
+      "minutos_llegada": 20,
       "productos": [
         {
           "id_producto": 1,

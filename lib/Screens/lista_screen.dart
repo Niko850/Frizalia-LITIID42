@@ -24,172 +24,189 @@ class ListaScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'FRIZALIA GELATERÍA',
-              style: TextStyle(
-                color: AppColors.rosaFuerte,
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 6),
-            const Text(
-              'Mi lista',
-              style: TextStyle(
-                fontSize: 29,
-                fontWeight: FontWeight.bold,
-                color: AppColors.texto,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '${productos.length} ${productos.length == 1 ? 'producto' : 'productos'} · ${cantidades.values.fold<int>(0, (sum, quantity) => sum + quantity)} unidades',
-              style: const TextStyle(color: AppColors.gris),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: productos.isEmpty
-                  ? _listaVacia()
-                  : ListView.separated(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      itemCount: productos.length,
-                      separatorBuilder: (_, _) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        final producto = productos[index];
-                        final cantidad = cantidades[producto.id] ?? 0;
-                        final fondo = index.isEven
-                            ? AppColors.rosaSuave
-                            : AppColors.amarilloSuave;
+    final totalUnidades = cantidades.values.fold<int>(
+      0,
+      (sum, quantity) => sum + quantity,
+    );
 
-                        return Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: AppColors.borde),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 62,
-                                height: 62,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: fondo,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: producto.imagenUrl == null
-                                    ? Text(
-                                        producto.imagen,
-                                        style: const TextStyle(fontSize: 32),
-                                      )
-                                    : ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
-                                        child: Image.network(
-                                          producto.imagenUrl!,
-                                          width: 62,
-                                          height: 62,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, _, _) => Text(
-                                            producto.imagen,
-                                            style: const TextStyle(
-                                              fontSize: 32,
+    return Scaffold(
+      backgroundColor: AppColors.fondo,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: AppColors.texto,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        title: const Text(
+          'Mi pedido',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: AppColors.borde),
+        ),
+      ),
+      body: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${productos.length} ${productos.length == 1 ? 'producto' : 'productos'} · $totalUnidades unidades',
+                style: const TextStyle(
+                  color: AppColors.gris,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: productos.isEmpty
+                    ? _listaVacia()
+                    : ListView.separated(
+                        padding: EdgeInsets.zero,
+                        itemCount: productos.length,
+                        separatorBuilder: (_, _) =>
+                            const SizedBox(height: 8),
+                        itemBuilder: (context, index) {
+                          final producto = productos[index];
+                          final cantidad = cantidades[producto.id] ?? 0;
+
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: AppColors.borde),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 52,
+                                  height: 52,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.rosaSuave,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: producto.imagenUrl == null
+                                      ? Text(
+                                          producto.imagen,
+                                          style: const TextStyle(fontSize: 27),
+                                        )
+                                      : ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          child: Image.network(
+                                            producto.imagenUrl!,
+                                            width: 52,
+                                            height: 52,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, _, _) => Text(
+                                              producto.imagen,
+                                              style:
+                                                  const TextStyle(fontSize: 27),
                                             ),
                                           ),
                                         ),
-                                      ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      producto.nombre,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: AppColors.texto,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '\$${producto.precio.toStringAsFixed(2)} c/u',
-                                      style: const TextStyle(
-                                        color: AppColors.gris,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    _controlCantidad(
-                                      cantidad: cantidad,
-                                      onDisminuir: () => onDisminuir(producto),
-                                      onAumentar: () => onAumentar(producto),
-                                    ),
-                                  ],
                                 ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '\$${(producto.precio * cantidad).toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                  color: AppColors.texto,
-                                  fontWeight: FontWeight.bold,
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        producto.nombre,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: AppColors.texto,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        '\$${producto.precio.toStringAsFixed(2)} c/u',
+                                        style: const TextStyle(
+                                          color: AppColors.gris,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _controlCantidad(
+                                        cantidad: cantidad,
+                                        onDisminuir: () =>
+                                            onDisminuir(producto),
+                                        onAumentar: () =>
+                                            onAumentar(producto),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-            ),
-            if (productos.isNotEmpty) ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: AppColors.borde),
-                ),
-                child: Column(
-                  children: [
-                    _filaTotal('Subtotal', subtotal),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      child: Divider(height: 1, color: AppColors.borde),
-                    ),
-                    _filaTotal('Total del pedido', subtotal, destacado: true),
-                  ],
-                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '\$${(producto.precio * cantidad).toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    color: AppColors.texto,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
               ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                height: 54,
-                child: FilledButton.icon(
-                  onPressed: () => _solicitarRecogida(context),
-                  icon: const Icon(Icons.shopping_bag_outlined),
-                  label: const Text('Solicitar recogida'),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.rosaFuerte,
-                    foregroundColor: Colors.white,
-                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+              if (productos.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.borde),
+                  ),
+                  child: _filaTotal(
+                    'Total del pedido',
+                    subtotal,
+                    destacado: true,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: FilledButton.icon(
+                    onPressed: () => _solicitarRecogida(context),
+                    icon: const Icon(Icons.shopping_bag_outlined, size: 20),
+                    label: const Text('Solicitar recogida'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.rosaFuerte,
+                      foregroundColor: Colors.white,
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
