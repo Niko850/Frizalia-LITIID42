@@ -54,7 +54,7 @@
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 35,
-      "stock": 15,
+      "stock": 14,
       "disponible": true,
       "imagen": "🍓"
     },
@@ -76,7 +76,7 @@
       "categoria": "Paletas",
       "categoria_id": 2,
       "precio": 28,
-      "stock": 28,
+      "stock": 27,
       "disponible": true,
       "imagen": "🥥"
     },
@@ -109,7 +109,7 @@
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 45,
-      "stock": 12,
+      "stock": 11,
       "disponible": true,
       "imagen": "🍫"
     },
@@ -142,7 +142,7 @@
       "categoria": "Aguas Naturales",
       "categoria_id": 3,
       "precio": 25,
-      "stock": 20,
+      "stock": 18,
       "disponible": true,
       "imagen": "🥭"
     },
@@ -258,6 +258,45 @@
     }
   ],
   "solicitudes": [
+    {
+      "id_solicitud": 7,
+      "folio": "FRZ-000007",
+      "id_usuario": 2,
+      "estado": "PENDIENTE",
+      "fecha_solicitud": "2026-11-25T04:21:12.530Z",
+      "minutos_llegada": 25,
+      "productos": [
+        {
+          "id_producto": 1,
+          "nombre_producto": "Helado de fresa - Mediano - Chispas de colores",
+          "cantidad": 1,
+          "precio_unitario": 25,
+          "subtotal": 25
+        },
+        {
+          "id_producto": 3,
+          "nombre_producto": "Paleta de coco",
+          "cantidad": 1,
+          "precio_unitario": 28,
+          "subtotal": 28
+        },
+        {
+          "id_producto": 6,
+          "nombre_producto": "Helado de chocolate - Grande - Chispas de colores, Jarabe de fresa",
+          "cantidad": 1,
+          "precio_unitario": 33,
+          "subtotal": 33
+        },
+        {
+          "id_producto": 9,
+          "nombre_producto": "Agua de Mango - Grande",
+          "cantidad": 2,
+          "precio_unitario": 60,
+          "subtotal": 120
+        }
+      ],
+      "total": 206
+    },
     {
       "id_solicitud": 6,
       "folio": "FRZ-000006",

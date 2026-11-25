@@ -6,6 +6,7 @@ import 'package:frizalia/Screens/perfil_screen.dart';
 
 import 'package:frizalia/Models/producto.dart';
 import 'package:frizalia/Services/api_service.dart';
+import 'package:frizalia/Services/carrito_cache.dart';
 import 'package:frizalia/Services/producto_service.dart';
 import 'package:frizalia/Utils/app_colors.dart';
 
@@ -27,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<Producto> productos = [];
-
+  final List<Producto> _itemsPersonalizados = [];
   final Map<int, int> seleccionados = {};
 
   late ProductoService productoService;
@@ -48,12 +49,48 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
+    seleccionados.addAll(CarritoCache.instance.obtenerCantidades(widget.correo));
+    _itemsPersonalizados.addAll(
+      CarritoCache.instance.obtenerPersonalizados(widget.correo),
+    );
+
     productoService = ProductoService(
       productos: productos,
       seleccionados: seleccionados,
     );
     cargarCatalogo();
     cargarMasPedidos();
+  }
+
+  void _persistirPedidoEnCurso() {
+    CarritoCache.instance.guardarEstado(
+      correo: widget.correo,
+      cantidades: seleccionados,
+      itemsPersonalizados: _itemsPersonalizados,
+    );
+  }
+
+  List<Producto> _productosParaPedido() {
+    final idsCatalogo = productos.map((p) => p.id).toSet();
+    final baseSeleccionados = productoService.seleccionadosLista();
+    final extrasVigentes = _itemsPersonalizados
+        .where(
+          (p) => (seleccionados[p.id] ?? 0) > 0 && !idsCatalogo.contains(p.id),
+        )
+        .toList();
+    return [...baseSeleccionados, ...extrasVigentes];
+  }
+
+  double _totalParaPedido() {
+    final idsCatalogo = productos.map((p) => p.id).toSet();
+    double total = productoService.totalCompra();
+    for (final p in _itemsPersonalizados) {
+      if (!idsCatalogo.contains(p.id)) {
+        final cant = seleccionados[p.id] ?? 0;
+        if (cant > 0) total += p.precio * cant;
+      }
+    }
+    return total;
   }
 
   Future<void> cargarCatalogo() async {
@@ -139,15 +176,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void agregarProducto(Producto producto) {
-    final agregado = productoService.agregarProducto(producto);
+    final existeEnCatalogo = productos.any((p) => p.id == producto.id);
+    if (!existeEnCatalogo) {
+      final idxExtra =
+          _itemsPersonalizados.indexWhere((p) => p.id == producto.id);
+      if (idxExtra == -1) {
+        _itemsPersonalizados.add(producto);
+      }
+      final actual = seleccionados[producto.id] ?? 0;
+      seleccionados[producto.id] = actual + 1;
+      _persistirPedidoEnCurso();
+      setState(() {});
+      mostrarMensaje('${producto.nombre} agregado al carrito');
+      return;
+    }
 
+    final agregado = productoService.agregarProducto(producto);
     if (!agregado) {
       mostrarMensaje('No hay más unidades disponibles');
       return;
     }
 
+    _persistirPedidoEnCurso();
     setState(() {});
-
     mostrarMensaje('${producto.nombre} agregado al carrito');
   }
 
@@ -157,22 +208,73 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(
         builder: (_) => StatefulBuilder(
           builder: (context, setModalState) {
+            final listaPedido = _productosParaPedido();
             return ListaScreen(
-              productos: productoService.seleccionadosLista(),
+              productos: listaPedido,
               cantidades: seleccionados,
-              subtotal: productoService.totalCompra(),
+              subtotal: _totalParaPedido(),
               onDisminuir: (producto) {
                 setState(() {
-                  productoService.cambiarCantidad(producto, -1);
+                  if (productos.any((p) => p.id == producto.id)) {
+                    productoService.cambiarCantidad(producto, -1);
+                  } else {
+                    final actual = seleccionados[producto.id] ?? 0;
+                    if (actual <= 1) {
+                      seleccionados.remove(producto.id);
+                      _itemsPersonalizados.removeWhere(
+                        (p) => p.id == producto.id,
+                      );
+                    } else {
+                      seleccionados[producto.id] = actual - 1;
+                    }
+                  }
+                  _persistirPedidoEnCurso();
                 });
                 setModalState(() {});
               },
               onAumentar: (producto) {
-                final agregado = productoService.agregarProducto(producto);
-                if (!agregado) {
-                  mostrarMensaje('No hay más unidades disponibles');
-                  return;
+                if (productos.any((p) => p.id == producto.id)) {
+                  final agregado = productoService.agregarProducto(producto);
+                  if (!agregado) {
+                    mostrarMensaje('No hay más unidades disponibles');
+                    return;
+                  }
+                } else {
+                  seleccionados[producto.id] =
+                      (seleccionados[producto.id] ?? 0) + 1;
                 }
+                _persistirPedidoEnCurso();
+                setState(() {});
+                setModalState(() {});
+              },
+              onActualizarProducto: (anterior, actualizado) {
+                final cantAnterior = seleccionados[anterior.id] ?? 0;
+                final idxCatalogo =
+                    productos.indexWhere((p) => p.id == anterior.id);
+                if (idxCatalogo != -1) {
+                  final idxExtra = _itemsPersonalizados.indexWhere(
+                    (p) => p.id == actualizado.id,
+                  );
+                  if (idxExtra != -1) {
+                    _itemsPersonalizados[idxExtra] = actualizado;
+                  } else {
+                    _itemsPersonalizados.add(actualizado);
+                  }
+                } else {
+                  final idxExtra = _itemsPersonalizados.indexWhere(
+                    (p) => p.id == anterior.id,
+                  );
+                  if (idxExtra != -1) {
+                    _itemsPersonalizados[idxExtra] = actualizado;
+                  } else {
+                    _itemsPersonalizados.add(actualizado);
+                  }
+                }
+                if (anterior.id != actualizado.id && cantAnterior > 0) {
+                  seleccionados.remove(anterior.id);
+                  seleccionados[actualizado.id] = cantAnterior;
+                }
+                _persistirPedidoEnCurso();
                 setState(() {});
                 setModalState(() {});
               },
@@ -182,11 +284,13 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               onSolicitar: (minutosLlegada) async {
                 final respuesta = await ApiService.instance.crearSolicitud(
-                  productos: productoService.seleccionadosLista(),
+                  productos: _productosParaPedido(),
                   cantidades: seleccionados,
                   minutosLlegada: minutosLlegada,
                 );
                 productoService.vaciarLista();
+                _itemsPersonalizados.clear();
+                CarritoCache.instance.limpiarEstado(widget.correo);
                 if (mounted) {
                   setState(() {});
                   cargarMasPedidos();
@@ -207,6 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void cerrarSesion() {
+    _persistirPedidoEnCurso();
     ApiService.instance.cerrarSesion();
     Navigator.pushAndRemoveUntil(
       context,
@@ -221,7 +326,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.fondo,
-
       body: SafeArea(
         child: IndexedStack(
           index: pagina,
@@ -231,11 +335,9 @@ class _HomeScreenState extends State<HomeScreen> {
               filtrados: filtrados,
               categoria: categoria,
               categorias: categorias,
-
               abrirBusqueda: () {
                 cambiarPagina(1);
               },
-
               verTodos: () {
                 setState(() {
                   categoria = 'Todos';
@@ -243,13 +345,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   pagina = 1;
                 });
               },
-
               cambiarCategoria: (valor) {
                 setState(() {
                   categoria = valor;
                 });
               },
-
               listadoProductos: ProductosGrid(
                 productos: filtrados,
                 onAgregar: agregarProducto,
@@ -258,13 +358,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 onRetry: cargarCatalogo,
               ),
             ),
-
             SearchView(
               categoria: categoria,
               categorias: categorias,
-
               resultados: filtrados.length,
-
               productosGrid: ProductosGrid(
                 productos: filtrados,
                 onAgregar: agregarProducto,
@@ -272,20 +369,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 error: errorCatalogo,
                 onRetry: cargarCatalogo,
               ),
-
               onBuscar: (valor) {
                 setState(() {
                   busqueda = valor;
                 });
               },
-
               onCategoriaSeleccionada: (valor) {
                 setState(() {
                   categoria = valor;
                 });
               },
             ),
-
             FavoritosView(
               catalogo: productos,
               frecuenciaPedidos: frecuenciaPedidos,
@@ -295,7 +389,6 @@ class _HomeScreenState extends State<HomeScreen> {
               onAgregar: agregarProducto,
               onExplorar: () => cambiarPagina(1),
             ),
-
             ProfileScreen(
               nombre:
                   ApiService.instance.usuario?['nombre'] as String? ??
@@ -306,7 +399,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -332,23 +424,20 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
-          if (cantidadCarrito > 0) ...[
-            const SizedBox(height: 10),
-            FloatingActionButton.extended(
-              heroTag: 'btnCarrito',
-              onPressed: abrirCarrito,
-              backgroundColor: AppColors.rosaFuerte,
-              foregroundColor: Colors.white,
-              icon: const Icon(Icons.shopping_bag_rounded),
-              label: Text(
-                'Carrito ($cantidadCarrito) · \$${productoService.totalCompra().toStringAsFixed(2)}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+          const SizedBox(height: 10),
+          FloatingActionButton.extended(
+            heroTag: 'btnCarrito',
+            onPressed: abrirCarrito,
+            backgroundColor: AppColors.rosaFuerte,
+            foregroundColor: Colors.white,
+            icon: const Icon(Icons.shopping_bag_rounded),
+            label: Text(
+              'Carrito ($cantidadCarrito) · \$${_totalParaPedido().toStringAsFixed(2)}',
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-          ],
+          ),
         ],
       ),
-
       bottomNavigationBar: BottomNavWidget(
         paginaActual: pagina,
         onTap: cambiarPagina,
