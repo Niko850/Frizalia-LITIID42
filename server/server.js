@@ -291,6 +291,64 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    const tiempoLlegadaMatch = req.method === 'POST'
+      ? pathName.match(/^\/api\/solicitudes\/(\d+)\/tiempo-llegada$/)
+      : null;
+    if (tiempoLlegadaMatch) {
+      const user = auth(req, res);
+      if (!user) return;
+      const idSolicitud = Number(tiempoLlegadaMatch[1]);
+      const solicitud = data.solicitudes.find((item) =>
+        item.id_solicitud === idSolicitud && item.id_usuario === user.id_usuario
+      );
+      if (!solicitud) {
+        send(res, 404, { mensaje: 'No se encontró el pedido.' });
+        return;
+      }
+      if (['ACEPTADA', 'ACEPTADO', 'EN_PREPARACION', 'LISTA', 'ENTREGADA', 'RECHAZADA', 'CANCELADA'].includes(solicitud.estado)) {
+        send(res, 409, { mensaje: 'El tiempo ya no puede modificarse en este estado.' });
+        return;
+      }
+      const body = await readJson(req);
+      const minutosLlegada = Number(body.minutos_llegada);
+      if (!Number.isInteger(minutosLlegada) || minutosLlegada < 1 || minutosLlegada > 180) {
+        send(res, 400, { mensaje: 'El tiempo debe estar entre 1 y 180 minutos.' });
+        return;
+      }
+      solicitud.minutos_llegada = minutosLlegada;
+      await saveData();
+      send(res, 200, solicitud);
+      return;
+    }
+
+    const cancelarMatch = req.method === 'POST'
+      ? pathName.match(/^\/api\/solicitudes\/(\d+)\/cancelar$/)
+      : null;
+    if (cancelarMatch) {
+      const user = auth(req, res);
+      if (!user) return;
+      const idSolicitud = Number(cancelarMatch[1]);
+      const solicitud = data.solicitudes.find((item) =>
+        item.id_solicitud === idSolicitud && item.id_usuario === user.id_usuario
+      );
+      if (!solicitud) {
+        send(res, 404, { mensaje: 'No se encontró el pedido.' });
+        return;
+      }
+      if (['ACEPTADA', 'ACEPTADO', 'EN_PREPARACION', 'LISTA', 'ENTREGADA', 'RECHAZADA', 'CANCELADA'].includes(solicitud.estado)) {
+        send(res, 409, { mensaje: 'Este pedido ya no puede cancelarse.' });
+        return;
+      }
+      solicitud.estado = 'CANCELADA';
+      for (const detalle of solicitud.productos || []) {
+        const producto = data.productos.find((item) => item.id_producto === Number(detalle.id_producto));
+        if (producto) producto.stock += Number(detalle.cantidad) || 0;
+      }
+      await saveData();
+      send(res, 200, solicitud);
+      return;
+    }
+
     send(res, 404, { mensaje: 'Ruta no encontrada.' });
   } catch (error) {
     if (error && error.status) {

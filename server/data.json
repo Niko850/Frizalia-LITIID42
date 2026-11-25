@@ -20,6 +20,13 @@
       "correo": "carlosr@gmail.com",
       "telefono": "9988000000",
       "password_hash": "db1c9871a1e1bab375a2347432d20f3c:605d6c1d7437034fbc9bb1139a9e598128c1920e6db69004c5f10e807f5e52aab74f5ed574d9c5f200fbfec8f8c3a732bca590d452e3c8935d51ce0bb25a8d55"
+    },
+    {
+      "id_usuario": 4,
+      "nombre": "Fanny Lopez Carrillo",
+      "correo": "fannyliz@gmail.com",
+      "telefono": "9988000000",
+      "password_hash": "da1c0715d55e08222060f77124e7d829:25f552bd4bbb5886004c402a4afa4ec508427fce9e7bb35f3175cc4b9f197ceb978756454db1e7efa0108e5847f8665488f5a511ed3e733a11f0ccf027634138"
     }
   ],
   "categorias": [
@@ -47,9 +54,9 @@
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 35,
-      "stock": 13,
+      "stock": 15,
       "disponible": true,
-      "imagen": "🍓"
+      "imagen": "ðŸ“"
     },
     {
       "id_producto": 2,
@@ -58,9 +65,9 @@
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 35,
-      "stock": 16,
+      "stock": 17,
       "disponible": true,
-      "imagen": "🥭"
+      "imagen": "ðŸ¥­"
     },
     {
       "id_producto": 3,
@@ -69,31 +76,31 @@
       "categoria": "Paletas",
       "categoria_id": 2,
       "precio": 28,
-      "stock": 27,
+      "stock": 28,
       "disponible": true,
-      "imagen": "🥥"
+      "imagen": "ðŸ¥¥"
     },
     {
       "id_producto": 4,
-      "nombre": "Paleta de limón",
-      "descripcion": "Refrescante y ácida",
+      "nombre": "Paleta de limÃ³n",
+      "descripcion": "Refrescante y Ã¡cida",
       "categoria": "Paletas",
       "categoria_id": 2,
       "precio": 25,
-      "stock": 24,
+      "stock": 25,
       "disponible": true,
-      "imagen": "🍋"
+      "imagen": "ðŸ‹"
     },
     {
       "id_producto": 5,
       "nombre": "Helado de vainilla",
-      "descripcion": "Clásico cremoso",
+      "descripcion": "ClÃ¡sico cremoso",
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 42,
       "stock": 13,
       "disponible": true,
-      "imagen": "🍦"
+      "imagen": "ðŸ¦"
     },
     {
       "id_producto": 6,
@@ -102,9 +109,9 @@
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 45,
-      "stock": 11,
+      "stock": 12,
       "disponible": true,
-      "imagen": "🍫"
+      "imagen": "ðŸ«"
     },
     {
       "id_producto": 7,
@@ -113,9 +120,9 @@
       "categoria": "Aguas Naturales",
       "categoria_id": 3,
       "precio": 25,
-      "stock": 19,
+      "stock": 20,
       "disponible": true,
-      "imagen": "🌾"
+      "imagen": "ðŸŒ¾"
     },
     {
       "id_producto": 8,
@@ -126,7 +133,7 @@
       "precio": 25,
       "stock": 18,
       "disponible": true,
-      "imagen": "🍓"
+      "imagen": "ðŸ“"
     },
     {
       "id_producto": 9,
@@ -137,29 +144,29 @@
       "precio": 25,
       "stock": 20,
       "disponible": true,
-      "imagen": "🥭"
+      "imagen": "ðŸ¥­"
     },
     {
       "id_producto": 10,
-      "nombre": "Agua de Limón",
+      "nombre": "Agua de LimÃ³n",
       "descripcion": "Natural y refrescante",
       "categoria": "Aguas Naturales",
       "categoria_id": 3,
       "precio": 25,
       "stock": 20,
       "disponible": true,
-      "imagen": "🍋"
+      "imagen": "ðŸ‹"
     },
     {
       "id_producto": 11,
       "nombre": "Agua de Pitahaya",
-      "descripcion": "Natural y exótica",
+      "descripcion": "Natural y exÃ³tica",
       "categoria": "Aguas Naturales",
       "categoria_id": 3,
       "precio": 25,
       "stock": 20,
       "disponible": true,
-      "imagen": "🌸"
+      "imagen": "ðŸŒ¸"
     },
     {
       "id_producto": 12,
@@ -170,7 +177,7 @@
       "precio": 25,
       "stock": 19,
       "disponible": true,
-      "imagen": "🥥"
+      "imagen": "ðŸ¥¥"
     },
     {
       "id_producto": 13,
@@ -181,18 +188,18 @@
       "precio": 42,
       "stock": 15,
       "disponible": true,
-      "imagen": "🍫"
+      "imagen": "ðŸ«"
     },
     {
       "id_producto": 14,
-      "nombre": "Helado de limón",
-      "descripcion": "Cremoso y cítrico",
+      "nombre": "Helado de limÃ³n",
+      "descripcion": "Cremoso y cÃ­trico",
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 42,
       "stock": 15,
       "disponible": true,
-      "imagen": "🍋"
+      "imagen": "ðŸ‹"
     },
     {
       "id_producto": 15,
@@ -203,18 +210,18 @@
       "precio": 42,
       "stock": 15,
       "disponible": true,
-      "imagen": "🍨"
+      "imagen": "ðŸ¨"
     },
     {
       "id_producto": 16,
       "nombre": "Helado de capuchino",
-      "descripcion": "Café cremoso con aroma intenso",
+      "descripcion": "CafÃ© cremoso con aroma intenso",
       "categoria": "Helados",
       "categoria_id": 1,
       "precio": 42,
       "stock": 15,
       "disponible": true,
-      "imagen": "☕"
+      "imagen": "â˜•"
     },
     {
       "id_producto": 17,
@@ -223,9 +230,9 @@
       "categoria": "Paletas",
       "categoria_id": 2,
       "precio": 28,
-      "stock": 20,
+      "stock": 18,
       "disponible": true,
-      "imagen": "🍇"
+      "imagen": "ðŸ‡"
     },
     {
       "id_producto": 18,
@@ -234,48 +241,73 @@
       "categoria": "Paletas",
       "categoria_id": 2,
       "precio": 28,
-      "stock": 19,
+      "stock": 18,
       "disponible": true,
-      "imagen": "🍓"
+      "imagen": "ðŸ“"
     },
     {
       "id_producto": 19,
-      "nombre": "Paleta de piña",
+      "nombre": "Paleta de piÃ±a",
       "descripcion": "Tropical y refrescante",
       "categoria": "Paletas",
       "categoria_id": 2,
       "precio": 28,
       "stock": 20,
       "disponible": true,
-      "imagen": "🍍"
+      "imagen": "ðŸ"
     }
   ],
   "solicitudes": [
+    {
+      "id_solicitud": 6,
+      "folio": "FRZ-000006",
+      "id_usuario": 3,
+      "estado": "PENDIENTE",
+      "fecha_solicitud": "2026-11-25T00:38:08.241Z",
+      "minutos_llegada": 25,
+      "productos": [
+        {
+          "id_producto": 17,
+          "nombre_producto": "Paleta de uva",
+          "cantidad": 2,
+          "precio_unitario": 28,
+          "subtotal": 56
+        },
+        {
+          "id_producto": 18,
+          "nombre_producto": "Paleta de fresa",
+          "cantidad": 1,
+          "precio_unitario": 28,
+          "subtotal": 28
+        }
+      ],
+      "total": 84
+    },
     {
       "id_solicitud": 5,
       "folio": "FRZ-000005",
       "id_usuario": 2,
       "estado": "PENDIENTE",
       "fecha_solicitud": "2026-11-25T00:22:29.093Z",
-      "minutos_llegada": 30,
+      "minutos_llegada": 15,
       "productos": [
         {
           "id_producto": 1,
-          "nombre_producto": "Helado de fresa · Mediano · Chispas de colores",
+          "nombre_producto": "Helado de fresa Â· Mediano Â· Chispas de colores",
           "cantidad": 1,
           "precio_unitario": 25,
           "subtotal": 25
         },
         {
           "id_producto": 5,
-          "nombre_producto": "Helado de vainilla · Grande · Jarabe de chocolate, Chispas de colores",
+          "nombre_producto": "Helado de vainilla Â· Grande Â· Jarabe de chocolate, Chispas de colores",
           "cantidad": 2,
           "precio_unitario": 33,
           "subtotal": 66
         },
         {
           "id_producto": 8,
-          "nombre_producto": "Agua de Fresa · Grande",
+          "nombre_producto": "Agua de Fresa Â· Grande",
           "cantidad": 1,
           "precio_unitario": 60,
           "subtotal": 60
@@ -300,14 +332,14 @@
       "productos": [
         {
           "id_producto": 1,
-          "nombre_producto": "Helado de fresa · Mediano · Chispas de chocolate, Jarabe de chocolate",
+          "nombre_producto": "Helado de fresa Â· Mediano Â· Chispas de chocolate, Jarabe de chocolate",
           "cantidad": 2,
           "precio_unitario": 30,
           "subtotal": 60
         },
         {
           "id_producto": 2,
-          "nombre_producto": "Helado de mango · Mediano · Chispas de colores",
+          "nombre_producto": "Helado de mango Â· Mediano Â· Chispas de colores",
           "cantidad": 1,
           "precio_unitario": 25,
           "subtotal": 25
@@ -321,14 +353,14 @@
         },
         {
           "id_producto": 8,
-          "nombre_producto": "Agua de Fresa · Mediano",
+          "nombre_producto": "Agua de Fresa Â· Mediano",
           "cantidad": 1,
           "precio_unitario": 43,
           "subtotal": 43
         },
         {
           "id_producto": 12,
-          "nombre_producto": "Agua de Coco · Grande",
+          "nombre_producto": "Agua de Coco Â· Grande",
           "cantidad": 1,
           "precio_unitario": 60,
           "subtotal": 60
@@ -340,34 +372,34 @@
       "id_solicitud": 3,
       "folio": "FRZ-000003",
       "id_usuario": 2,
-      "estado": "PENDIENTE",
+      "estado": "CANCELADA",
       "fecha_solicitud": "2026-11-25T00:09:09.616Z",
       "minutos_llegada": 10,
       "productos": [
         {
           "id_producto": 1,
-          "nombre_producto": "Helado de fresa · Grande · Chispas de chocolate, Chispas de colores, Jarabe de chocolate",
+          "nombre_producto": "Helado de fresa Â· Grande Â· Chispas de chocolate, Chispas de colores, Jarabe de chocolate",
           "cantidad": 1,
           "precio_unitario": 38,
           "subtotal": 38
         },
         {
           "id_producto": 4,
-          "nombre_producto": "Paleta de limón",
+          "nombre_producto": "Paleta de limÃ³n",
           "cantidad": 1,
           "precio_unitario": 25,
           "subtotal": 25
         },
         {
           "id_producto": 6,
-          "nombre_producto": "Helado de chocolate · Mediano · Jarabe de chocolate, Chispas de colores",
+          "nombre_producto": "Helado de chocolate Â· Mediano Â· Jarabe de chocolate, Chispas de colores",
           "cantidad": 1,
           "precio_unitario": 30,
           "subtotal": 30
         },
         {
           "id_producto": 7,
-          "nombre_producto": "Agua de Horchata · Grande",
+          "nombre_producto": "Agua de Horchata Â· Grande",
           "cantidad": 1,
           "precio_unitario": 60,
           "subtotal": 60
@@ -379,7 +411,7 @@
       "id_solicitud": 2,
       "folio": "FRZ-000002",
       "id_usuario": 2,
-      "estado": "PENDIENTE",
+      "estado": "CANCELADA",
       "fecha_solicitud": "2026-11-24T17:33:56.534Z",
       "minutos_llegada": 20,
       "productos": [
